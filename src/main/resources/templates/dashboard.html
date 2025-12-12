@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<th:block layout:fragment="content">
+    <div class="jumbotron">
+        <h1 class="display-4">欢迎使用管理系统</h1>
+        <p class="lead">这是一个用于管理信息的简单系统</p>
+        <hr class="my-4">
+        <p>您可以在这里添加、编辑信息</p>
+        <div class="mt-4">
+            <a class="btn btn-primary btn-lg me-2" href="/ui/schools" role="button">学校管理</a>
+            <a class="btn btn-success btn-lg" href="/ui/grades" role="button">年级管理</a>
+            <a class="btn btn-success btn-lg" href="/ui/classrooms" role="button">班级管理</a>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">学生管理</h5>
+                    <p class="card-text">添加、编辑和删除学生信息，分配教师给学生。</p>
+                    <a href="/ui/students" class="btn btn-primary">进入学生管理</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">教师管理</h5>
+                    <p class="card-text">添加、编辑和删除教师信息，查看所教学生。</p>
+                    <a href="/ui/teachers" class="btn btn-success">进入教师管理</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">课程管理</h5>
+                    <p class="card-text">添加、编辑和删除课程信息。</p>
+                    <a href="/ui/courses" class="btn btn-success">进入课程管理</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+</html>

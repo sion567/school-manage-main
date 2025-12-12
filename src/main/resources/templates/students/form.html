@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<th:block layout:fragment="content">
+    <h2 th:text="${student.id != null ? '编辑学生' : '添加学生'}"></h2>
+    <form th:object="${student}" th:action="@{${basePath}}" method="post">
+        <input type="hidden" th:field="*{id}">
+        <div class="mb-3">
+            <label for="name" class="form-label">姓名</label>
+            <input type="text" class="form-control" id="name" th:field="*{personalInfo.name}" required>
+        </div>
+        <div class="mb-3">
+            <label for="dateOfBirth" class="form-label">生日</label>
+            <input type="date" class="form-control" id="dateOfBirth" th:field="*{personalInfo.dateOfBirth}">
+        </div>
+        <div class="mb-3">
+            <label for="enrollmentDate" class="form-label">入学年月</label>
+            <input type="date" class="form-control" id="enrollmentDate" th:field="*{enrollmentDate}">
+        </div>
+        <div class="mb-3">
+            <label for="grade" class="form-label">年级</label>
+            <select class="form-select" id="grade" th:field="*{grade.id}">
+                <option value="">选择年级</option>
+                <option th:each="grade : ${grades}" th:value="${grade.id}" th:text="${grade.name}"></option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="classroom" class="form-label">班级</label>
+            <select class="form-select" id="classroom" th:field="*{classroom.id}">
+                <option value="">选择班级</option>
+                <option th:each="classroom : ${classrooms}" th:value="${classroom.id}" th:text="${classroom.name}"></option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">保存</button>
+        <a th:href="@{${basePath}}" class="btn btn-secondary">取消</a>
+    </form>
+</th:block>
+</html>

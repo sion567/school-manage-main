@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">学校管理</title>
+</head>
+<body>
+    <th:block layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>学校列表</h2>
+            <a th:href="@{${basePath + '/new'}}" class="btn btn-primary">添加学校</a>
+        </div>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>名称</th>
+                <th>电话</th>
+                <th>邮箱</th>
+                <th>地址</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="school : ${schools}">
+                <td th:text="${school.id}"></td>
+                <td th:text="${school.name}"></td>
+                <td th:text="${school.contactInfo.phoneNumber}"></td>
+                <td th:text="${school.contactInfo.email}"></td>
+                <td>-</td>
+                <td>
+                    <a th:href="@{${basePath + '/' + school.id + '/edit'}}" class="btn btn-sm btn-warning">编辑</a>
+                    <a th:href="@{${basePath + '/' + school.id + '/delete'}}" class="btn btn-sm btn-danger" onclick="return confirm('确定删除吗？')">删除</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </th:block>
+</body>
+</html>

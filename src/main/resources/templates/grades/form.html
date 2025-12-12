@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">年级管理</title>
+</head>
+<body>
+    <th:block layout:fragment="content">
+        <h2 th:text="${grade.id != null ? '编辑年级' : '添加年级'}"></h2>
+        <form th:object="${grade}" th:action="@{${basePath}}" method="post">
+            <input type="hidden" th:field="*{id}">
+            <div class="mb-3">
+                <label for="name" class="form-label">名称</label>
+                <input type="text" class="form-control" id="name" th:field="*{name}" required>
+            </div>
+            <div class="mb-3">
+                <label for="schoolId" class="form-label">学校</label>
+                <select class="form-select" id="schoolId" th:field="*{school.id}">
+                    <option value="">选择学校</option>
+                    <option th:each="school : ${schools}" th:value="${school.id}" th:text="${school.name}"></option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">保存</button>
+            <a th:href="@{${basePath}}" class="btn btn-secondary">取消</a>
+        </form>
+    </th:block>
+</body>
+</html>

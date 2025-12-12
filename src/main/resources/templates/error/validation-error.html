@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>验证错误</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .error-container {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        .error-title {
+            color: #721c24;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .error-details {
+            background-color: #fff;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .error-list {
+            text-align: left;
+            margin: 20px 0;
+        }
+        .error-item {
+            color: #721c24;
+            margin-bottom: 8px;
+            padding: 8px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        .error-item strong {
+            color: #dc3545;
+        }
+        .back-link {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .back-link:hover {
+            background-color: #0056b3;
+        }
+        .error-info {
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+<div class="error-container">
+    <div class="error-title">验证失败</div>
+    <p th:text="${message}" style="text-align: center;"></p>
+
+    <div class="error-details" th:if="${errors != null and not #maps.isEmpty(errors)}">
+        <h4>错误详情:</h4>
+        <div class="error-list">
+            <div th:each="error : ${errors}" class="error-item">
+                <strong th:text="${error.key}"></strong>:
+                <span th:text="${error.value}"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="error-info">
+        <small>错误时间: <span th:text="${#dates.format(timestamp, 'yyyy-MM-dd HH:mm:ss')}"></span></small>
+    </div>
+
+    <div style="text-align: center;">
+        <a href="javascript:history.back()" class="back-link">返回上一页</a>
+        <a href="/" class="back-link" style="margin-left: 10px;">返回首页</a>
+    </div>
+</div>
+</body>
+</html>

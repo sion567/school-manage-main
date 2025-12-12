@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">年级管理</title>
+</head>
+<body>
+    <th:block layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>年级列表</h2>
+            <a th:href="@{${basePath + '/new'}}" class="btn btn-primary mb-3">添加年级</a>
+        </div>
+        <!-- 搜索条件 -->
+        <div class="search-container">
+            <form th:action="@{${basePath}}" method="get" class="row g-3">
+                <div class="col-md-6">
+                    <label for="schoolId" class="form-label">按学校筛选</label>
+                    <select id="schoolId" name="schoolId" class="form-select">
+                        <option value="">全部学校</option>
+                        <option th:each="school : ${schools}"
+                                th:value="${school.id}"
+                                th:text="${school.name}"
+                                th:selected="${selectedSchoolId == school.id ? 'selected' : null}">
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-6 d-flex align-items-end">
+                    <button type="submit" class="btn btn-light me-2">搜索</button>
+                    <a th:href="@{${basePath}}" class="btn btn-secondary">清除筛选</a>
+                </div>
+            </form>
+        </div>
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>名称</th>
+                <th>学校</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="grade : ${grades}">
+                <td th:text="${grade.id}"></td>
+                <td th:text="${grade.name}"></td>
+                <td th:text="${grade.school.name}"></td>
+                <td>
+                    <a th:href="@{${basePath + '/' + grade.id + '/edit'}}" class="btn btn-sm btn-warning">编辑</a>
+                    <a th:href="@{${basePath + '/' + grade.id + '/delete'}}" class="btn btn-sm btn-danger" onclick="return confirm('确定删除吗？')">删除</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </th:block>
+</body>
+</html>

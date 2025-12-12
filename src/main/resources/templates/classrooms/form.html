@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<th:block layout:fragment="content">
+    <h2 th:text="${classroom.id != null ? '编辑班级' : '添加班级'}"></h2>
+    <form th:object="${classroom}" th:action="@{${basePath}}" method="post">
+        <input type="hidden" th:field="*{id}">
+        <div class="mb-3">
+            <label for="name" class="form-label">名称</label>
+            <input type="text" class="form-control" id="name" th:field="*{name}" required>
+        </div>
+        <div class="mb-3">
+            <label for="grade" class="form-label">年级</label>
+            <select class="form-select" id="grade" th:field="*{grade.id}">
+                <option value="">选择年级</option>
+                <option th:each="grade : ${grades}" th:value="${grade.id}" th:text="${grade.name}"></option>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label for="teacherSearch" class="form-label">选择老师</label>
+
+            <div class="mb-3">
+                <input type="text" id="teacherSearch" class="form-control"
+                       placeholder="输入班主任名搜索..." autocomplete="off">
+                <div class="form-text">输入班主任名搜索</div>
+            </div>
+
+            <div class="mb-3">
+                <select id="teacherSelect" th:field="*{teacher.id}" class="form-select">
+                    <option value="">请选择老师</option>
+                    <option th:each="teacher : ${teachers}"
+                            th:value="${teacher.id}"
+                            th:text="${teacherpersonalInfo.name}">
+                    </option>
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">保存</button>
+        <a th:href="@{${basePath}}" class="btn btn-secondary">取消</a>
+    </form>
+</th:block>
+<script>
+    // 防抖函数
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    // 获取DOM元素
+    const searchInput = document.getElementById('teacherSearch');
+    const selectElement = document.getElementById('teacherSelect');
+
+    // 搜索功能 - 带防抖
+    const debouncedSearch = debounce(function(e) {
+        const searchTerm = e.target.value.trim();
+
+        // 清空下拉框（保留默认选项）
+        while (selectElement.options.length > 1) {
+            selectElement.remove(1);
+        }
+
+        // 如果搜索词为空，恢复所有老师
+        if (searchTerm === '') {
+            fetchAllTeachers();
+            return;
+        }
+
+        // 搜索老师
+        searchTeachers(searchTerm);
+    }, 300);
+
+    // 搜索老师API调用
+    async function searchTeachers(keyword) {
+        try {
+            const response = await fetch(`/api/teachers/search?keyword=${encodeURIComponent(keyword)}`);
+            const teachers = await response.json();
+
+            teachers.forEach(teacher => {
+                const option = document.createElement('option');
+                option.value = teacher.id;
+                option.textContent = teacher.name;
+                selectElement.appendChild(option);
+            });
+        } catch (error) {
+            console.error('搜索老师失败:', error);
+        }
+    }
+
+    // 获取所有老师
+    async function fetchAllTeachers() {
+        try {
+            const response = await fetch('/api/teachers');
+            const teachers = await response.json();
+
+            teachers.forEach(teacher => {
+                const option = document.createElement('option');
+                option.value = teacher.id;
+                option.textContent = teacher.name;
+                selectElement.appendChild(option);
+            });
+        } catch (error) {
+            console.error('获取老师列表失败:', error);
+        }
+    }
+
+    // 事件监听
+    searchInput.addEventListener('input', debouncedSearch);
+
+    // 当用户选择老师时，同步搜索框内容
+    selectElement.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        if (selectedOption.value && selectedOption.value !== '') {
+            searchInput.value = selectedOption.textContent;
+        } else {
+            searchInput.value = '';
+        }
+    });
+
+    // 页面加载时初始化
+    document.addEventListener('DOMContentLoaded', function() {
+        // 可以在这里添加初始化逻辑
+    });
+</script>
+</html>

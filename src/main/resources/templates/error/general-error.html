@@ -1,0 +1,81 @@
+<!-- error/general-error.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>系统错误</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .error-container {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        .error-title {
+            color: #721c24;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .error-message {
+            color: #721c24;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .error-details {
+            background-color: #fff;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .back-link {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .back-link:hover {
+            background-color: #0056b3;
+        }
+        .error-info {
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+<div class="error-container">
+    <div class="error-title">系统错误</div>
+    <div class="error-message" th:text="${message}"></div>
+
+    <div class="error-details" th:if="${exceptionClass != null}">
+        <h4>错误详情:</h4>
+        <p><strong>异常类型:</strong> <span th:text="${exceptionClass}"></span></p>
+        <p><strong>异常信息:</strong> <span th:text="${exceptionMessage}"></span></p>
+    </div>
+
+    <div class="error-info">
+        <small>错误时间: <span th:text="${#dates.format(timestamp, 'yyyy-MM-dd HH:mm:ss')}"></span></small>
+    </div>
+
+    <div style="text-align: center;">
+        <a href="javascript:history.back()" class="back-link">返回上一页</a>
+        <a href="/" class="back-link" style="margin-left: 10px;">返回首页</a>
+    </div>
+</div>
+</body>
+</html>

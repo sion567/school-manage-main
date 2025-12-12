@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<th:block layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>学生列表</h2>
+        <a th:href="@{${basePath + '/new'}}" class="btn btn-primary mb-3">添加学生</a>
+    </div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>姓名</th>
+            <th>邮箱</th>
+            <th>生日</th>
+            <th>入学年月</th>
+            <th>年级</th>
+            <th>班级</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="student : ${students}">
+            <td th:text="${student.id}"></td>
+            <td th:text="${student.name}"></td>
+            <td th:text="${student.dateOfBirth}"></td>
+            <td th:text="${student.enrollmentDate}"></td>
+            <td th:text="${student.grade.name}"></td>
+            <td th:text="${student.classroom.name}"></td>
+            <td>
+                <a th:href="@{${basePath + '/' + student.id + '/edit'}}" class="btn btn-sm btn-warning">编辑</a>
+                <a th:href="@{${basePath + '/' + student.id + '/delete'}}" class="btn btn-sm btn-danger" onclick="return confirm('确定删除吗？')">删除</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</th:block>
+</html>
