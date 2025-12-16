@@ -66,7 +66,7 @@ public class GradeController {
 
     @PostMapping
     public String createGrade(@Valid @ModelAttribute Grade grade) {
-        service.createGrade(grade);
+        service.save(grade);
         return getRedirectPath();
     }
 
@@ -74,13 +74,6 @@ public class GradeController {
     public String showEditForm(@PathVariable Long id, Model model) {
         model.addAttribute("grade", service.findById(id).orElseThrow(() -> new ResourceNotFoundException("Grade not found", "Grade Id:" + id)));
         return "grades/form";
-    }
-
-    @PostMapping("/{id}")
-    public String updateGrade(@PathVariable Long id, @ModelAttribute Grade grade) {
-        grade.setId(id);
-        service.update(grade);
-        return getRedirectPath();
     }
 
     @GetMapping("/{id}/delete")

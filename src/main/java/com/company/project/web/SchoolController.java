@@ -3,6 +3,8 @@ package com.company.project.web;
 import com.company.project.core.exception.BusinessException;
 import com.company.project.core.exception.ResourceNotFoundException;
 import com.company.project.domain.School;
+import com.company.project.dto.SchoolCreateDTO;
+import com.company.project.dto.SchoolUpdateDTO;
 import com.company.project.service.SchoolService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,18 +51,15 @@ public class SchoolController {
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("school", new School());
-        return "schools/form";
+        return "schools/input";
     }
-
     @PostMapping
-    public String createSchool(@Valid @ModelAttribute School school, BindingResult bindingResult, Model model) {
+    public String createSchool(@Valid @ModelAttribute SchoolCreateDTO school, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("errors", bindingResult.getFieldErrors());
-            return "schools/form";
+            return "schools/input";
         }
-
-
-        service.create(school);
+        service.createSchool(school);
         model.addAttribute("message", "用户信息提交成功！");
         return getRedirectPath();
     }
@@ -68,21 +67,18 @@ public class SchoolController {
     @GetMapping("/{id}/edit")
     public String showEditForm(@PathVariable Long id, Model model) {
         model.addAttribute("school", service.findById(id).orElseThrow());
-        return "schools/form";
+        return "schools/edit";
     }
 
     @PostMapping("/{id}")
-    public String updateSchool(@PathVariable Long id, @ModelAttribute School school) {
-        try {
-            school.setId(id);
-            service.update(school);
-            return getRedirectPath();
-        } catch (ResourceNotFoundException e) {
-            throw e; // 会自动被处理
-        } catch (Exception e) {
-            throw new BusinessException("更新数据失败", e);
+    public String updateSchool(@PathVariable Long id, @Valid @ModelAttribute SchoolUpdateDTO school, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("errors", bindingResult.getFieldErrors());
+            return "schools/edit";
         }
-
+        service.updateSchool(school);
+        model.addAttribute("message", "用户信息提交成功！");
+        return getRedirectPath();
     }
 
     @GetMapping("/{id}/delete")

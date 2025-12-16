@@ -54,7 +54,7 @@ public class StudentController {
 
     @PostMapping
     public String createStudent(@ModelAttribute Student student) {
-        service.create(student);
+        service.save(student);
         return getRedirectPath();
     }
 
@@ -62,13 +62,6 @@ public class StudentController {
     public String showEditForm(@PathVariable Long id, Model model) {
         model.addAttribute("student", service.findById(id).orElseThrow());
         return "students/form";
-    }
-
-    @PostMapping("/{id}")
-    public String updateStudent(@PathVariable Long id, @ModelAttribute Student student) {
-        student.setId(id);
-        service.update(student);
-        return getRedirectPath();
     }
 
     @GetMapping("/{id}/delete")

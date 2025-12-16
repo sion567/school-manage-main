@@ -16,7 +16,6 @@ import com.company.project.domain.School;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@ActiveProfiles("test")
 public class GradeRepositoryTest {
 
     @Autowired

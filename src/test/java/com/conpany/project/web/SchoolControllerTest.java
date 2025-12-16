@@ -1,13 +1,11 @@
 package com.conpany.project.web;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -17,28 +15,25 @@ import com.company.project.service.SchoolService;
 import com.company.project.web.SchoolController;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@WebMvcTest(controllers = SchoolController.class)
 public class SchoolControllerTest {
 
-    @Mock
+    @MockitoBean
     private SchoolService schoolService;
 
-    @InjectMocks
-    private SchoolController schoolController;
-
+    @Autowired
     private MockMvc mockMvc;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(schoolController).build();
-    }
 
     @Test
     public void testListSchools() throws Exception {
+//        given(schoolService.findAll()).willReturn(null);
+
         School school1 = new School();
         school1.setId(1L);
         school1.setName("学校1");
@@ -107,7 +102,7 @@ public class SchoolControllerTest {
         school.setId(1L);
         school.setName("更新后的学校");
 
-        when(schoolService.update(any(School.class))).thenReturn(school);
+        when(schoolService.save(any(School.class))).thenReturn(school);
 
         mockMvc.perform(post("/schools/1")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -116,7 +111,7 @@ public class SchoolControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(header().string("Location", "/schools"));
 
-        verify(schoolService, times(1)).update(any(School.class));
+        verify(schoolService, times(1)).save(any(School.class));
     }
 
     @Test

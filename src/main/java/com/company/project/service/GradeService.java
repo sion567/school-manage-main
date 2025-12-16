@@ -6,9 +6,11 @@ import com.company.project.core.exception.ResourceNotFoundException;
 import com.company.project.core.service.BaseService;
 import com.company.project.dao.GradeRepository;
 import com.company.project.dao.SchoolRepository;
+import com.company.project.domain.Course;
 import com.company.project.domain.Grade;
 import com.company.project.domain.School;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,17 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class GradeService extends BaseService<Grade, Long> {
     private final GradeRepository repository;
     private final SchoolRepository schoolRepository;
-    public GradeService(GradeRepository repository, SchoolRepository schoolRepository) {
-        super(repository);
+    public GradeService(GradeRepository repository, SchoolRepository schoolRepository, ModelMapper modelMapper) {
+        super(repository, Grade.class, modelMapper);
         this.repository = repository;
         this.schoolRepository = schoolRepository;
-    }
-
-    public Grade createGrade(Grade grade) {
-//        School school = schoolRepository.findById(grade.getSchool().getId())
-//                .orElseThrow(() -> new ResourceNotFoundException("School Id:" + grade.getSchool().getId() +". not found"));
-//        grade.setSchool(school);
-        return repository.save(grade);
     }
 
     public List<Grade> findBySchoolId(Long schoolId) {

@@ -12,11 +12,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ContactInfo {
-    @Email(message = "邮箱格式不正确")
-    @NotBlank(message = "邮箱不能为空")
     private String email;
     @Column(name = "phone_number")
     private String phoneNumber;
     @Embedded
-    private Address address = new Address();
+    private Address address;
 }

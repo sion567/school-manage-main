@@ -8,13 +8,11 @@ import com.company.project.core.exception.BusinessException;
 import com.company.project.core.service.BaseService;
 import com.company.project.dao.RoleRepository;
 import com.company.project.dao.UserAccountRepository;
-import com.company.project.domain.Authority;
-import com.company.project.domain.Role;
-import com.company.project.domain.User;
-import com.company.project.domain.UserAccount;
+import com.company.project.domain.*;
 import com.company.project.dto.UserAccountDetails;
 import com.company.project.vo.RegisterUserRequest;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -31,8 +29,8 @@ public class UserAccountService extends BaseService<UserAccount, Long> implement
 
     public UserAccountService(UserAccountRepository repository,
                               PasswordEncoder passwordEncoder,
-                              RoleRepository roleRepository) {
-        super(repository);
+                              RoleRepository roleRepository, ModelMapper modelMapper) {
+        super(repository, UserAccount.class, modelMapper);
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;

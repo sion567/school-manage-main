@@ -1,11 +1,10 @@
-package com.company.project.core.dao.persistence;
+package com.company.project.core.persistence;
+
+import com.google.common.collect.Maps;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.google.common.collect.Maps;
 
 public class SearchFilter {
 

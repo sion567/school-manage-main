@@ -4,8 +4,10 @@ import java.util.Optional;
 
 import com.company.project.core.service.BaseService;
 import com.company.project.dao.StudentRepository;
+import com.company.project.domain.School;
 import com.company.project.domain.Student;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,8 +17,8 @@ public class StudentService extends BaseService<Student, Long> {
 
     private final StudentRepository repository;
 
-    public StudentService(StudentRepository studentRepository) {
-        super(studentRepository);
+    public StudentService(StudentRepository studentRepository, ModelMapper modelMapper) {
+        super(studentRepository, Student.class, modelMapper);
         this.repository = studentRepository;
     }
 

@@ -3,16 +3,14 @@ package com.company.project.dao;
 import java.util.List;
 import java.util.Optional;
 
-import com.company.project.core.dao.BaseRepository;
 import com.company.project.domain.Gender;
 import com.company.project.domain.Student;
 
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface StudentRepository  extends BaseRepository<Student, Long> {
+public interface StudentRepository  extends JpaRepositoryImplementation<Student, Long> {
     Optional<Student> findByStudentNumber(String studentNumber);
 
     // 根据性别查询

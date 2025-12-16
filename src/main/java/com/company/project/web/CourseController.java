@@ -59,12 +59,6 @@ public class CourseController {
         return "courses/form";
     }
 
-    @PostMapping
-    public String createCourse(@Valid @ModelAttribute Course course) {
-        service.create(course);
-        return getRedirectPath();
-    }
-
     @GetMapping("/teacher-select")
     @ResponseBody
     public List<Teacher> searchTeachers(@RequestParam(required = false) String keyword) {
@@ -74,17 +68,16 @@ public class CourseController {
         return teacherService.searchTeachers(keyword.trim());
     }
 
+    @PostMapping
+    public String createCourse(@Valid @ModelAttribute Course course) {
+        service.save(course);
+        return getRedirectPath();
+    }
+
     @GetMapping("/{id}/edit")
     public String showEditForm(@PathVariable Long id, Model model) {
         model.addAttribute("course", service.findById(id).orElseThrow());
         return "courses/form";
-    }
-
-    @PostMapping("/{id}")
-    public String updateCourse(@PathVariable Long id, @ModelAttribute Course course) {
-        course.setId(id);
-        service.update(course);
-        return getRedirectPath();
     }
 
     @GetMapping("/{id}/delete")

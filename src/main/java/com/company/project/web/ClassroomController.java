@@ -104,7 +104,7 @@ public class ClassroomController {
 
     @PostMapping
     public String createClassroom(@Valid @ModelAttribute Classroom classroom) {
-        service.create(classroom);
+        service.save(classroom);
         return getRedirectPath();
     }
 
@@ -112,13 +112,6 @@ public class ClassroomController {
     public String showEditForm(@PathVariable Long id, Model model) {
         model.addAttribute("classroom", service.findById(id).orElseThrow());
         return "classrooms/form";
-    }
-
-    @PostMapping("/{id}")
-    public String updateClassroom(@PathVariable Long id, @ModelAttribute Classroom classroom) {
-        classroom.setId(id);
-        service.update(classroom);
-        return getRedirectPath();
     }
 
     @GetMapping("/{id}/delete")

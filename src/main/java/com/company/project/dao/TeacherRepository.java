@@ -3,16 +3,15 @@ package com.company.project.dao;
 import java.util.List;
 import java.util.Optional;
 
-import com.company.project.core.dao.BaseRepository;
-import com.company.project.domain.Grade;
 import com.company.project.domain.Teacher;
 
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TeacherRepository extends BaseRepository<Teacher, Long> {
+public interface TeacherRepository extends JpaRepositoryImplementation<Teacher, Long> {
 
     @Query("SELECT t FROM Teacher t WHERE t.personalInfo.home.email = :email OR t.work.email = :email")
     Optional<Teacher> findByEmail(@Param("email") String email);

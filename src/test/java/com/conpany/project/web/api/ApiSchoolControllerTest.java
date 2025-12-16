@@ -121,7 +121,7 @@ public class ApiSchoolControllerTest {
         school.setId(1L);
         school.setName("更新后的学校");
 
-        when(schoolService.update(any(School.class))).thenReturn(school);
+        when(schoolService.save(any(School.class))).thenReturn(school);
 
         mockMvc.perform(put("/api/v1/schools/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -131,7 +131,7 @@ public class ApiSchoolControllerTest {
                 .andExpect(jsonPath("$.data.name").value("更新后的学校"))
                 .andExpect(jsonPath("$.success").value(true));
 
-        verify(schoolService, times(1)).update(any(School.class));
+        verify(schoolService, times(1)).save(any(School.class));
     }
 
     @Test

@@ -1,21 +1,16 @@
-package com.company.project.core.dao.persistence;
+package com.company.project.core.persistence;
 
-import java.util.Collection;
-import java.util.List;
-
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
+import com.google.common.collect.Lists;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.data.jpa.domain.Specification;
 
-import com.google.common.collect.Lists;
+import java.util.Collection;
+import java.util.List;
 
 public class DynamicSpecifications {
     private static final ConversionService conversionService = new DefaultConversionService();

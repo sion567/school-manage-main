@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+  <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">学校管理</title>
+</head>
+<body>
+<th:block layout:fragment="content">
+  <h2>编辑学校</h2>
+  <form th:object="${school}" th:action="@{/school/{id}(id=${school.id})}" method="post">
+    <div th:if="${school?.id != null}">
+      <input type="hidden" th:field="*{id}">
+    </div>
+    <div class="mb-3">
+      <label for="name" class="form-label">名称</label>
+      <input type="text" class="form-control" id="name" th:field="*{name}" required>
+      <div th:if="${#fields.hasErrors('name')}" class="error">
+        <span th:errors="*{name}"></span>
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="email" class="form-label">邮箱</label>
+      <input type="text" class="form-control" id="email" th:field="*{contactInfo.email}" required>
+      <div th:if="${#fields.hasErrors('contactInfo.email')}" class="error">
+        <span th:errors="*{contactInfo.email}"></span>
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="phoneNumber" class="form-label">电话</label>
+      <input type="text" class="form-control" id="phoneNumber" th:field="*{contactInfo.phoneNumber}">
+      <div th:if="${#fields.hasErrors('contactInfo.phoneNumber')}" class="error">
+        <span th:errors="*{contactInfo.phoneNumber}"></span>
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="province" class="form-label">省/直辖市</label>
+      <input type="text" class="form-control" id="province" th:field="*{contactInfo.address.province}">
+      <div th:if="${#fields.hasErrors('contactInfo.address.province')}" class="error">
+        <span th:errors="*{contactInfo.address.province}"></span>
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="street" class="form-label">街道</label>
+      <input type="text" class="form-control" id="street" th:field="*{contactInfo.address.street}">
+      <div th:if="${#fields.hasErrors('contactInfo.address.street')}" class="error">
+        <span th:errors="*{contactInfo.address.street}"></span>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">保存</button>
+    <a th:href="@{${basePath}}" class="btn btn-secondary">取消</a>
+  </form>
+</th:block>
+</body>
+</html>

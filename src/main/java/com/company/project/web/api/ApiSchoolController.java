@@ -187,9 +187,8 @@ public class ApiSchoolController {
     public ResponseEntity<School> updateSchool(
             @Parameter(description = "学校ID", example = "1", required = true) @PathVariable Long id,
             @Parameter(description = "学校信息", required = true) @Valid @RequestBody School school) {
-        school.setId(id);
-        School updatedSchool = schoolService.update(school);
-        return ResponseEntity.ok(updatedSchool);
+        School updateSchool = schoolService.updateEntityPartially(id, school);
+        return ResponseEntity.ok(updateSchool);
     }
 
     @Operation(summary = "删除学校", description = "根据ID删除学校")
@@ -241,8 +240,7 @@ public class ApiSchoolController {
 
     @PutMapping("/grades/{id}")
     public ResponseEntity<Grade> updateGrade(@PathVariable Long id, @RequestBody Grade grade) {
-        grade.setId(id);
-        Grade updatedGrade = gradeService.update(grade);
+        Grade updatedGrade = gradeService.updateEntityPartially(id, grade);
         return ResponseEntity.ok(updatedGrade);
     }
 
@@ -274,8 +272,7 @@ public class ApiSchoolController {
 
     @PutMapping("/classrooms/{id}")
     public ResponseEntity<Classroom> updateClassroom(@PathVariable Long id, @RequestBody Classroom classroom) {
-        classroom.setId(id);
-        Classroom updatedClassroom = classroomService.update(classroom);
+        Classroom updatedClassroom = classroomService.updateEntityPartially(id, classroom);
         return ResponseEntity.ok(updatedClassroom);
     }
 
@@ -308,7 +305,7 @@ public class ApiSchoolController {
     @PutMapping("/teachers/{id}")
     public ResponseEntity<Teacher> updateTeacher(@PathVariable Long id, @RequestBody Teacher teacher) {
         teacher.setId(id);
-        Teacher updatedTeacher = teacherService.update(teacher);
+        Teacher updatedTeacher = teacherService.updateEntityPartially(id, teacher);
         return ResponseEntity.ok(updatedTeacher);
     }
 
@@ -340,8 +337,7 @@ public class ApiSchoolController {
 
     @PutMapping("/courses/{id}")
     public ResponseEntity<Course> updateCourse(@PathVariable Long id, @RequestBody Course course) {
-        course.setId(id);
-        Course updatedCourse = courseService.update(course);
+        Course updatedCourse = courseService.updateEntityPartially(id, course);
         return ResponseEntity.ok(updatedCourse);
     }
 
@@ -373,8 +369,7 @@ public class ApiSchoolController {
 
     @PutMapping("/students/{id}")
     public ResponseEntity<Student> updateStudent(@PathVariable Long id, @RequestBody Student student) {
-        student.setId(id);
-        Student updatedStudent = studentService.update(student);
+        Student updatedStudent = studentService.updateEntityPartially(id, student);
         return ResponseEntity.ok(updatedStudent);
     }
 

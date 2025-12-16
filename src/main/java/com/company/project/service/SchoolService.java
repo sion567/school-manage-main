@@ -6,9 +6,13 @@ import com.company.project.core.service.BaseService;
 import com.company.project.dao.SchoolRepository;
 import com.company.project.dao.StudentRepository;
 import com.company.project.dao.TeacherRepository;
+import com.company.project.domain.Role;
 import com.company.project.domain.School;
+import com.company.project.dto.SchoolCreateDTO;
+import com.company.project.dto.SchoolUpdateDTO;
 import com.company.project.vo.SchoolStatistics;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,16 +25,47 @@ public class SchoolService extends BaseService<School, Long> {
 
     public SchoolService(SchoolRepository schoolRepository,
                          TeacherRepository teacherRepository,
-                         StudentRepository studentRepository) {
-        super(schoolRepository);
+                         StudentRepository studentRepository, ModelMapper modelMapper) {
+        super(schoolRepository, School.class, modelMapper);
         this.schoolRepository = schoolRepository;
         this.teacherRepository = teacherRepository;
         this.studentRepository = studentRepository;
     }
 
-    public School createSchool(School school) {
-        return schoolRepository.save(school);
+
+    public void createSchool(SchoolCreateDTO dto) {
+        School school = map(dto, School.class);
+        create(school);
     }
+    public void updateSchool(SchoolUpdateDTO dto){
+        School school = map(dto, School.class);
+        update(school);
+    }
+
+//
+//    public UserDTO getUserDTO(Long id) {
+//        User user = userRepository.findById(id).orElseThrow();
+//        return genericMapper.map(user, UserDTO.class);
+//    }
+//
+//    public void updateUser(Long id, UserUpdateDTO updateDTO) {
+//        User existingUser = userRepository.findById(id).orElseThrow();
+//        genericMapper.update(updateDTO, existingUser);
+//        userRepository.save(existingUser);
+//    }
+
+
+    // 确保在事务中加载懒加载集合
+//    public UserDTO getUserWithOrdersEagerly(Long userId) {
+//        User user = userRepository.findById(userId)
+//                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+//
+//        // 强制初始化集合（如果需要）
+//        Hibernate.initialize(user.getOrders());
+//
+//        return modelMapper.map(user, UserDTO.class);
+//    }
+
 
 //    public void addTeacherToSchool(Long schoolId, Long studentId) {
 //        School school = schoolRepository.findById(schoolId)

@@ -6,6 +6,7 @@ import com.company.project.domain.Teacher;
 import com.company.project.service.SchoolService;
 import com.company.project.service.TeacherService;
 
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -68,8 +69,8 @@ public class TeacherController {
     }
 
     @PostMapping
-    public String createTeacher(@ModelAttribute Teacher teacher) {
-        service.create(teacher);
+    public String createTeacher(@Valid @ModelAttribute Teacher teacher) {
+        service.save(teacher);
         return getRedirectPath();
     }
 
@@ -77,13 +78,6 @@ public class TeacherController {
     public String showEditForm(@PathVariable Long id, Model model) {
         model.addAttribute("teacher", service.findById(id).orElseThrow());
         return "teachers/form";
-    }
-
-    @PostMapping("/{id}")
-    public String updateTeacher(@PathVariable Long id, @ModelAttribute Teacher teacher) {
-        teacher.setId(id);
-        service.update(teacher);
-        return getRedirectPath();
     }
 
     @GetMapping("/{id}/delete")

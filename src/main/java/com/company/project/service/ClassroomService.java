@@ -8,6 +8,7 @@ import com.company.project.dao.ClassroomRepository;
 import com.company.project.domain.Classroom;
 import com.company.project.vo.ClassroomDetailRecord;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,8 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class ClassroomService extends BaseService<Classroom, Long> {
     private final ClassroomRepository repository;
 
-    public ClassroomService(ClassroomRepository repository) {
-        super(repository);
+    public ClassroomService(ClassroomRepository repository, ModelMapper modelMapper) {
+        super(repository, Classroom.class, modelMapper);
         this.repository = repository;
     }
 

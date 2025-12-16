@@ -25,22 +25,20 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Table(name = "tbl_schools")
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)
-@Schema(description = "学校实体")
+//@DynamicUpdate
 public class School extends DateAuditEntity {
     @Column
-    @NotBlank(message = "用户名不能为空")
-    @Size(max = 100, message = "学校名称不能超过100个字符")
     private String name;
 
-    @Valid
     @Embedded
-    private ContactInfo contactInfo = new ContactInfo();
+    private ContactInfo contactInfo;
 
     @OneToMany(mappedBy = "school", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Grade> grades;

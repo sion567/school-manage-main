@@ -7,9 +7,11 @@ import com.company.project.core.exception.BusinessException;
 import com.company.project.core.service.BaseService;
 import com.company.project.dao.StudentRepository;
 import com.company.project.dao.TeacherRepository;
+import com.company.project.domain.Student;
 import com.company.project.domain.Teacher;
 import com.company.project.domain.User;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +26,8 @@ public class TeacherService extends BaseService<Teacher, Long> {
 
     public TeacherService(TeacherRepository repository,
                           StudentRepository studentRepository,
-                          UserAccountService userAccountService) {
-        super(repository);
+                          UserAccountService userAccountService, ModelMapper modelMapper) {
+        super(repository, Teacher.class, modelMapper);
         this.repository = repository;
         this.studentRepository = studentRepository;
         this.userAccountService = userAccountService;

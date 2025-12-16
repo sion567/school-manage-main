@@ -29,7 +29,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @Tag(name = "通用 CRUD 操作", description = "通用的增删改查操作接口")
-public abstract class CrudRestController<T extends BaseEntity, ID extends Serializable> extends BaseRestController {
+public abstract class CrudRestController<T extends BaseEntity<ID>, ID extends Serializable> extends BaseRestController {
 
     protected abstract BaseService<T, ID> getService();
 
@@ -90,9 +90,8 @@ public abstract class CrudRestController<T extends BaseEntity, ID extends Serial
                 return error("ID不匹配");
             }
 
-            entity.setId(id);
-            T updatedEntity = getService().update(entity);
-            return success("更新成功", updatedEntity);
+            getService().updateEntityPartially(id, entity);
+            return success("更新成功", entity);
         } catch (Exception e) {
             return error("更新失败: " + e.getMessage());
         }
@@ -140,19 +139,19 @@ public abstract class CrudRestController<T extends BaseEntity, ID extends Serial
     /**
      * 批量删除
      */
-    @DeleteMapping("/batch")
-    public ResponseEntity<ResponseResult<String>> batchDelete(@RequestBody List<ID> ids) {
-        try {
-            validateNotNull(ids, "ID列表不能为空");
-            if (ids.isEmpty()) {
-                return error("ID列表不能为空");
-            }
-            int deletedCount = getService().deleteByIds(ids);
-            return success("批量删除成功，共删除" + deletedCount + "条记录");
-        } catch (Exception e) {
-            return error("批量删除失败: " + e.getMessage());
-        }
-    }
+//    @DeleteMapping("/batch")
+//    public ResponseEntity<ResponseResult<String>> batchDelete(@RequestBody List<ID> ids) {
+//        try {
+//            validateNotNull(ids, "ID列表不能为空");
+//            if (ids.isEmpty()) {
+//                return error("ID列表不能为空");
+//            }
+//            int deletedCount = getService().deleteByIds(ids);
+//            return success("批量删除成功，共删除" + deletedCount + "条记录");
+//        } catch (Exception e) {
+//            return error("批量删除失败: " + e.getMessage());
+//        }
+//    }
 
     /**
      * 实体验证

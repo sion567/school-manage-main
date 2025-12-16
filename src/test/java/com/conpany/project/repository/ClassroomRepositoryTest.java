@@ -3,6 +3,8 @@ package com.conpany.project.repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
@@ -19,7 +21,10 @@ import com.company.project.domain.School;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
+//@Import({ClassroomRepository.class, GradeRepository.class, SchoolRepository.class})
 public class ClassroomRepositoryTest {
+
+    private final Pageable pageable = Pageable.unpaged();
 
     @Autowired
     private ClassroomRepository classroomRepository;

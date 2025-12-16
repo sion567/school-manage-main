@@ -3,6 +3,7 @@ package com.company.project.web;
 import com.company.project.service.UserAccountService;
 import com.company.project.vo.RegisterUserRequest;
 
+import org.springdoc.webmvc.ui.SwaggerUiHome;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -65,7 +66,7 @@ public class AuthController {
     }
 
 
-    @GetMapping({"/","/dashboard"})
+//    @GetMapping({"/", "/dashboard"})
     public String dashboard(Model model) {
         log.debug("go to dashboard");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
