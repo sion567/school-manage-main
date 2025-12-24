@@ -12,7 +12,7 @@ import com.company.project.domain.*;
 import com.company.project.dto.UserAccountDetails;
 import com.company.project.vo.RegisterUserRequest;
 
-import org.modelmapper.ModelMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,19 +22,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class UserAccountService extends BaseService<UserAccount, Long> implements UserDetailsService {
+@RequiredArgsConstructor
+public class UserAccountService implements UserDetailsService {
     private final UserAccountRepository repository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
-
-    public UserAccountService(UserAccountRepository repository,
-                              PasswordEncoder passwordEncoder,
-                              RoleRepository roleRepository, ModelMapper modelMapper) {
-        super(repository, UserAccount.class, modelMapper);
-        this.repository = repository;
-        this.passwordEncoder = passwordEncoder;
-        this.roleRepository = roleRepository;
-    }
 
     public void validateUser(RegisterUserRequest req) {
         // 业务逻辑验证

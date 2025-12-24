@@ -3,10 +3,14 @@ package com.company.project.core.web;
 import java.io.Serializable;
 import java.util.List;
 
+import com.company.project.core.dto.BaseDTO;
+import com.company.project.core.dto.BaseUpdateDTO;
 import com.company.project.core.exception.BusinessException;
 import com.company.project.core.model.BaseEntity;
 import com.company.project.core.service.BaseService;
 
+import com.company.project.core.vo.BaseVO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -29,9 +33,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @Tag(name = "通用 CRUD 操作", description = "通用的增删改查操作接口")
-public abstract class CrudRestController<T extends BaseEntity<ID>, ID extends Serializable> extends BaseRestController {
+@RequiredArgsConstructor
+public abstract class CrudRestController<T extends BaseEntity<ID>, VO extends BaseVO, CREATE_DTO extends BaseDTO, UPDATE_DTO extends BaseUpdateDTO, ID extends Serializable> extends BaseRestController {
 
-    protected abstract BaseService<T, ID> getService();
+    protected final BaseService<T, VO, CREATE_DTO, UPDATE_DTO, ID> crudService;
 
     protected abstract Class<T> getEntityType();
 
@@ -43,12 +48,12 @@ public abstract class CrudRestController<T extends BaseEntity<ID>, ID extends Se
             @ApiResponse(responseCode = "500", description = "服务器内部错误")
     })
     @PostMapping
-    public ResponseEntity<ResponseResult<T>> create(
+    public ResponseEntity<ResponseResult<VO>> create(
             @Parameter(description = "实体信息", required = true)
-            @Valid @RequestBody T entity) {
+            @Valid @RequestBody CREATE_DTO dto) {
         try {
-            validateEntity(entity);
-            T createdEntity = getService().create(entity);
+            validateEntity(dto);
+            VO createdEntity = crudService.create(dto);
             return success("创建成功", createdEntity);
         } catch (Exception e) {
             return error("创建失败: " + e.getMessage());
@@ -62,10 +67,10 @@ public abstract class CrudRestController<T extends BaseEntity<ID>, ID extends Se
             @ApiResponse(responseCode = "500", description = "服务器内部错误")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseResult<T>> getById(@PathVariable ID id) {
+    public ResponseEntity<ResponseResult<VO>> getById(@PathVariable ID id) {
         try {
             validateNotNull(id, "ID不能为空");
-            return getService().findById(id)
+            return crudService.findById(id)
                 .map(this::success)
                 .orElse(error(404, "数据不存在"));
         } catch (Exception e) {
@@ -81,17 +86,17 @@ public abstract class CrudRestController<T extends BaseEntity<ID>, ID extends Se
             @ApiResponse(responseCode = "500", description = "服务器内部错误")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseResult<T>> update(@PathVariable ID id, @RequestBody T entity) {
+    public ResponseEntity<ResponseResult<VO>> update(@PathVariable ID id, @RequestBody UPDATE_DTO dto) {
         try {
             validateNotNull(id, "ID不能为空");
-            validateEntity(entity);
+            validateEntity(dto);
 
-            if (!id.equals(entity.getId())) {
+            if (!id.equals(dto.getId())) {
                 return error("ID不匹配");
             }
 
-            getService().updateEntityPartially(id, entity);
-            return success("更新成功", entity);
+            VO result = crudService.update(dto);
+            return success("更新成功", result);
         } catch (Exception e) {
             return error("更新失败: " + e.getMessage());
         }
@@ -107,7 +112,7 @@ public abstract class CrudRestController<T extends BaseEntity<ID>, ID extends Se
     public ResponseEntity<ResponseResult<String>> delete(@PathVariable ID id) {
         try {
             validateNotNull(id, "ID不能为空");
-            boolean deleted = getService().deleteById(id);
+            boolean deleted = crudService.deleteById(id);
             if (deleted) {
                 return success("删除成功");
             } else {
@@ -125,10 +130,10 @@ public abstract class CrudRestController<T extends BaseEntity<ID>, ID extends Se
             @ApiResponse(responseCode = "500", description = "服务器内部错误")
     })
     @GetMapping
-    public ResponseEntity<ResponseResult<PageResponse<T>>> findAll(
+    public ResponseEntity<ResponseResult<PageResponse<VO>>> findAll(
             @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         try {
-            Page<T> page = getService().findAll(pageable);
+            Page<VO> page = crudService.findAll(pageable);
             return pageResponse(new PageRequest(pageable.getPageNumber() + 1, pageable.getPageSize()),
                     new PageResult<>(page.getTotalElements(), page.getContent()));
         } catch (Exception e) {
@@ -153,11 +158,9 @@ public abstract class CrudRestController<T extends BaseEntity<ID>, ID extends Se
 //        }
 //    }
 
-    /**
-     * 实体验证
-     */
-    protected void validateEntity(T entity) {
-        if (entity == null) {
+
+    protected void validateEntity(BaseDTO dto) {
+        if (dto == null) {
             throw new BusinessException("实体不能为空");
         }
         // 可以在这里添加具体的验证逻辑
@@ -166,12 +169,12 @@ public abstract class CrudRestController<T extends BaseEntity<ID>, ID extends Se
     /**
      * 批量验证
      */
-    protected void validateEntities(List<T> entities) {
-        if (entities == null) {
+    protected void validateEntities(List<BaseDTO> list) {
+        if (list == null) {
             throw new BusinessException("实体列表不能为空");
         }
-        for (T entity : entities) {
-            validateEntity(entity);
+        for (BaseDTO dto : list) {
+            validateEntity(dto);
         }
     }
 

@@ -1,10 +1,13 @@
 package com.company.project.core.exception;
 
+import lombok.Getter;
+
 import java.util.Map;
 
+@Getter
 public class CustomValidationException extends RuntimeException {
     private Map<String, String> fieldErrors;
-    private String errorCode;
+    private final String errorCode;
 
     public CustomValidationException(String message) {
         super(message);
@@ -28,6 +31,4 @@ public class CustomValidationException extends RuntimeException {
         this.errorCode = errorCode;
     }
 
-    public Map<String, String> getFieldErrors() { return fieldErrors; }
-    public String getErrorCode() { return errorCode; }
 }

@@ -1,0 +1,95 @@
+package com.company.project.core.web;
+
+import com.company.project.core.exception.ResourceNotFoundException;
+import com.company.project.core.model.BaseEntity;
+import com.company.project.core.service.BaseService;
+import com.company.project.core.vo.BaseVO;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import java.io.Serializable;
+
+@Controller
+@RequiredArgsConstructor
+public abstract class CrudController<T extends BaseEntity<ID>, VO extends BaseVO<ID>, CREATE_DTO, UPDATE_DTO, ID extends Serializable> extends BaseController {
+
+    protected final BaseService<T, VO, CREATE_DTO, UPDATE_DTO, ID> crudService;
+    protected final String basePath;
+    protected final String listView;
+    protected final String inputView;
+    protected final String editView;
+
+    @ModelAttribute("basePath")
+    public String getBasePath() {
+        return basePath;
+    }
+
+    @GetMapping
+    public String list(Model model) {
+        model.addAttribute("entities", crudService.findAll());
+        return listView;
+    }
+
+    @GetMapping("/new")
+    public String showCreateForm(Model model) {
+        model.addAttribute("dto", createNewDto());
+        return inputView;
+    }
+
+    @PostMapping
+    public String create(@Valid @ModelAttribute CREATE_DTO dto,
+                         BindingResult bindingResult,
+                         Model model) {
+        if (bindingResult.hasErrors()) {
+            return handleSaveError(model, bindingResult, inputView);
+        }
+        crudService.create(dto);
+        return handleSaveSuccess(model, getCreateSuccessMessage(), basePath);
+    }
+
+    @GetMapping("/{id}/edit")
+    public String showEditForm(@PathVariable ID id, Model model) {
+        model.addAttribute("dto", crudService.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException("Entity not found with id: " + id, null)));
+        return editView;
+    }
+
+    @PostMapping("/{id}")
+    public String update(@PathVariable ID id,
+                         @Valid @ModelAttribute UPDATE_DTO dto,
+                         BindingResult bindingResult,
+                         Model model) {
+        if (bindingResult.hasErrors()) {
+            return handleSaveError(model, bindingResult, editView);
+        }
+        crudService.update(dto);
+        return handleSaveSuccess(model, getUpdateSuccessMessage(), basePath);
+    }
+
+    @GetMapping("/{id}/delete")
+    public String delete(@PathVariable ID id) {
+        try {
+            crudService.deleteById(id);
+            return handleDeleteSuccess(basePath);
+        } catch (Exception e) {
+            handleDeleteError(e);
+            return null; // 不会到达这里，因为抛出了异常
+        }
+    }
+
+    // 子类必须实现的抽象方法
+    protected abstract CREATE_DTO createNewDto();
+    protected String getCreateSuccessMessage() {
+        return "信息创建成功！";
+    }
+    protected String getUpdateSuccessMessage() {
+        return "信息变更成功！";
+    }
+}

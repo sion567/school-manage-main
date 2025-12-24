@@ -14,13 +14,16 @@ public record SchoolCreateDTO (
         String name,
         @Email(message = "邮箱格式不正确")
         @NotBlank(message = "邮箱不能为空")
-        String email, String phoneNumber,
+        String email,
+        String phone,
         @Schema(description = "省/直辖市", example = "北京市")
         String province,
         @Schema(description = "街道", example = "建国路")
         String street)
         implements BaseDTO {
-    public static SchoolCreateDTO fromCore(SchoolDTO core) {
-        return new SchoolCreateDTO(core.name(), core.email(), core.phoneNumber(), core.province() , core.street());
+
+    public SchoolCreateDTO () {
+        this("", null, null, null, null);
     }
+
 }

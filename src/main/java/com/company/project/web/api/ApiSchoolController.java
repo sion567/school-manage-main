@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import com.company.project.core.dto.PageResponse;
 import com.company.project.core.dto.Result;
+import com.company.project.core.exception.BusinessException;
 import com.company.project.core.exception.ResourceNotFoundException;
 import com.company.project.domain.Classroom;
 import com.company.project.domain.Course;
@@ -15,6 +16,7 @@ import com.company.project.domain.Grade;
 import com.company.project.domain.School;
 import com.company.project.domain.Student;
 import com.company.project.domain.Teacher;
+import com.company.project.dto.*;
 import com.company.project.service.ClassroomService;
 import com.company.project.service.CourseService;
 import com.company.project.service.GradeService;
@@ -22,6 +24,7 @@ import com.company.project.service.SchoolService;
 import com.company.project.service.StudentService;
 import com.company.project.service.TeacherService;
 
+import com.company.project.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -84,11 +87,11 @@ public class ApiSchoolController {
     })
     @GetMapping("/schools")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Result<PageResponse<School>>> getAllSchools(
+    public ResponseEntity<Result<PageResponse<SchoolVO>>> getAllSchools(
             @Parameter(description = "页码") @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "每页大小") @RequestParam(defaultValue = "10") int size) {
-        Page<School> schoolPage = schoolService.findAll(PageRequest.of(page, size));
-        PageResponse<School> response = new PageResponse<>(
+        Page<SchoolVO> schoolPage = schoolService.findAll(PageRequest.of(page, size));
+        PageResponse<SchoolVO> response = new PageResponse<>(
                 schoolPage.getContent(),
                 schoolPage.getTotalElements(),
                 schoolPage.getTotalPages(),
@@ -109,9 +112,9 @@ public class ApiSchoolController {
             @ApiResponse(responseCode = "404", description = "学校不存在", content = @Content)
     })
     @GetMapping("/schools/{id}")
-    public ResponseEntity<Result<School>> getSchoolById(
+    public ResponseEntity<Result<SchoolVO>> getSchoolById(
             @Parameter(description = "学校ID", example = "1", required = true) @PathVariable Long id) {
-        School school = schoolService.findById(id).orElseThrow(() -> new ResourceNotFoundException("School not found", "school Id:"+id));
+        SchoolVO school = schoolService.findById(id).orElseThrow(() -> new ResourceNotFoundException("School not found", "school Id:"+id));
         return ResponseEntity.ok(Result.success(school));
     }
 
@@ -122,13 +125,13 @@ public class ApiSchoolController {
                             schema = @Schema(implementation = Result.class)) }),
             @ApiResponse(responseCode = "400", description = "Invalid input provided") })
     @PostMapping("/schools")
-    public ResponseEntity<Result<School>> createSchool(@io.swagger.v3.oas.annotations.parameters.RequestBody(
+    public ResponseEntity<Result<SchoolVO>> createSchool(@io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "School to create", required = true,
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = School.class),
                     examples = @ExampleObject(value = "{ \"name\": \"New School\" }")))
-            @Valid @RequestBody School school) {
-        School createdSchool = schoolService.create(school);
+            @Valid @RequestBody SchoolCreateDTO dto) {
+        SchoolVO createdSchool = schoolService.create(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(Result.success(createdSchool));
 
 
@@ -184,10 +187,13 @@ public class ApiSchoolController {
 
     @Operation(summary = "更新学校", description = "根据ID更新学校信息")
     @PutMapping("/schools/{id}")
-    public ResponseEntity<School> updateSchool(
+    public ResponseEntity<SchoolVO> updateSchool(
             @Parameter(description = "学校ID", example = "1", required = true) @PathVariable Long id,
-            @Parameter(description = "学校信息", required = true) @Valid @RequestBody School school) {
-        School updateSchool = schoolService.updateEntityPartially(id, school);
+            @Parameter(description = "学校信息", required = true) @Valid @RequestBody SchoolUpdateDTO dto) {
+        if (!id.equals(dto.getId())) {
+            throw new BusinessException("URL参数ID与DTO中的ID不匹配");
+        }
+        SchoolVO updateSchool = schoolService.update(dto);
         return ResponseEntity.ok(updateSchool);
     }
 
@@ -220,27 +226,27 @@ public class ApiSchoolController {
 
     // 年级API
     @GetMapping("/grades")
-    public ResponseEntity<List<Grade>> getAllGrades() {
-        List<Grade> grades = gradeService.findAll();
+    public ResponseEntity<List<GradeVO>> getAllGrades() {
+        List<GradeVO> grades = gradeService.findAll();
         return ResponseEntity.ok(grades);
     }
 
     @GetMapping("/grades/{id}")
-    public ResponseEntity<Grade> getGradeById(@PathVariable Long id) {
-        Optional<Grade> grade = gradeService.findById(id);
+    public ResponseEntity<GradeVO> getGradeById(@PathVariable Long id) {
+        Optional<GradeVO> grade = gradeService.findById(id);
         return grade.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/grades")
-    public ResponseEntity<Grade> createGrade(@RequestBody Grade grade) {
-        Grade createdGrade = gradeService.create(grade);
+    public ResponseEntity<GradeVO> createGrade(@RequestBody GradeCreateDTO dto) {
+        GradeVO createdGrade = gradeService.create(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdGrade);
     }
 
     @PutMapping("/grades/{id}")
-    public ResponseEntity<Grade> updateGrade(@PathVariable Long id, @RequestBody Grade grade) {
-        Grade updatedGrade = gradeService.updateEntityPartially(id, grade);
+    public ResponseEntity<GradeVO> updateGrade(@PathVariable Long id, @RequestBody GradeUpdateDTO dto) {
+        GradeVO updatedGrade = gradeService.update(dto);
         return ResponseEntity.ok(updatedGrade);
     }
 
@@ -252,27 +258,27 @@ public class ApiSchoolController {
 
     // 班级API
     @GetMapping("/classrooms")
-    public ResponseEntity<List<Classroom>> getAllClassrooms() {
-        List<Classroom> classrooms = classroomService.findAll();
+    public ResponseEntity<List<ClassroomVO>> getAllClassrooms() {
+        List<ClassroomVO> classrooms = classroomService.findAll();
         return ResponseEntity.ok(classrooms);
     }
 
     @GetMapping("/classrooms/{id}")
-    public ResponseEntity<Classroom> getClassroomById(@PathVariable Long id) {
-        Optional<Classroom> classroom = classroomService.findById(id);
+    public ResponseEntity<ClassroomVO> getClassroomById(@PathVariable Long id) {
+        Optional<ClassroomVO> classroom = classroomService.findById(id);
         return classroom.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/classrooms")
-    public ResponseEntity<Classroom> createClassroom(@RequestBody Classroom classroom) {
-        Classroom createdClassroom = classroomService.create(classroom);
+    public ResponseEntity<ClassroomVO> createClassroom(@RequestBody ClassroomCreateDTO dto) {
+        ClassroomVO createdClassroom = classroomService.create(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdClassroom);
     }
 
     @PutMapping("/classrooms/{id}")
-    public ResponseEntity<Classroom> updateClassroom(@PathVariable Long id, @RequestBody Classroom classroom) {
-        Classroom updatedClassroom = classroomService.updateEntityPartially(id, classroom);
+    public ResponseEntity<ClassroomVO> updateClassroom(@PathVariable Long id, @RequestBody ClassroomUpdateDTO dto) {
+        ClassroomVO updatedClassroom = classroomService.update(dto);
         return ResponseEntity.ok(updatedClassroom);
     }
 
@@ -284,28 +290,27 @@ public class ApiSchoolController {
 
     // 教师API
     @GetMapping("/teachers")
-    public ResponseEntity<List<Teacher>> getAllTeachers() {
-        List<Teacher> teachers = teacherService.findAll();
+    public ResponseEntity<List<TeacherVO>> getAllTeachers() {
+        List<TeacherVO> teachers = teacherService.findAll();
         return ResponseEntity.ok(teachers);
     }
 
     @GetMapping("/teachers/{id}")
-    public ResponseEntity<Teacher> getTeacherById(@PathVariable Long id) {
-        Optional<Teacher> teacher = teacherService.findById(id);
+    public ResponseEntity<TeacherVO> getTeacherById(@PathVariable Long id) {
+        Optional<TeacherVO> teacher = teacherService.findById(id);
         return teacher.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/teachers")
-    public ResponseEntity<Teacher> createTeacher(@RequestBody Teacher teacher) {
-        Teacher createdTeacher = teacherService.create(teacher);
+    public ResponseEntity<TeacherVO> createTeacher(@RequestBody TeacherCreateDTO dto) {
+        TeacherVO createdTeacher = teacherService.create(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTeacher);
     }
 
     @PutMapping("/teachers/{id}")
-    public ResponseEntity<Teacher> updateTeacher(@PathVariable Long id, @RequestBody Teacher teacher) {
-        teacher.setId(id);
-        Teacher updatedTeacher = teacherService.updateEntityPartially(id, teacher);
+    public ResponseEntity<TeacherVO> updateTeacher(@PathVariable Long id, @RequestBody TeacherUpdateDTO dto) {
+        TeacherVO updatedTeacher = teacherService.update(dto);
         return ResponseEntity.ok(updatedTeacher);
     }
 
@@ -317,27 +322,27 @@ public class ApiSchoolController {
 
     // 课程API
     @GetMapping("/courses")
-    public ResponseEntity<List<Course>> getAllCourses() {
-        List<Course> courses = courseService.findAll();
+    public ResponseEntity<List<CourseVO>> getAllCourses() {
+        List<CourseVO> courses = courseService.findAll();
         return ResponseEntity.ok(courses);
     }
 
     @GetMapping("/courses/{id}")
-    public ResponseEntity<Course> getCourseById(@PathVariable Long id) {
-        Optional<Course> course = courseService.findById(id);
+    public ResponseEntity<CourseVO> getCourseById(@PathVariable Long id) {
+        Optional<CourseVO> course = courseService.findById(id);
         return course.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/courses")
-    public ResponseEntity<Course> createCourse(@RequestBody Course course) {
-        Course createdCourse = courseService.create(course);
+    public ResponseEntity<CourseVO> createCourse(@RequestBody CourseCreateDTO dto) {
+        CourseVO createdCourse = courseService.create(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCourse);
     }
 
     @PutMapping("/courses/{id}")
-    public ResponseEntity<Course> updateCourse(@PathVariable Long id, @RequestBody Course course) {
-        Course updatedCourse = courseService.updateEntityPartially(id, course);
+    public ResponseEntity<CourseVO> updateCourse(@PathVariable Long id, @RequestBody CourseUpdateDTO dto) {
+        CourseVO updatedCourse = courseService.update(dto);
         return ResponseEntity.ok(updatedCourse);
     }
 
@@ -349,27 +354,27 @@ public class ApiSchoolController {
 
     // 学生API
     @GetMapping("/students")
-    public ResponseEntity<List<Student>> getAllStudents() {
-        List<Student> students = studentService.findAll();
+    public ResponseEntity<List<StudentVO>> getAllStudents() {
+        List<StudentVO> students = studentService.findAll();
         return ResponseEntity.ok(students);
     }
 
     @GetMapping("/students/{id}")
-    public ResponseEntity<Student> getStudentById(@PathVariable Long id) {
-        Optional<Student> student = studentService.findById(id);
+    public ResponseEntity<StudentVO> getStudentById(@PathVariable Long id) {
+        Optional<StudentVO> student = studentService.findById(id);
         return student.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/students")
-    public ResponseEntity<Student> createStudent(@RequestBody Student student) {
-        Student createdStudent = studentService.create(student);
+    public ResponseEntity<StudentVO> createStudent(@RequestBody StudentCreateDTO dto) {
+        StudentVO createdStudent = studentService.create(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdStudent);
     }
 
     @PutMapping("/students/{id}")
-    public ResponseEntity<Student> updateStudent(@PathVariable Long id, @RequestBody Student student) {
-        Student updatedStudent = studentService.updateEntityPartially(id, student);
+    public ResponseEntity<StudentVO> updateStudent(@PathVariable Long id, @RequestBody StudentUpdateDTO dto) {
+        StudentVO updatedStudent = studentService.update(dto);
         return ResponseEntity.ok(updatedStudent);
     }
 

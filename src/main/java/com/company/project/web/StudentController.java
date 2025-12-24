@@ -1,8 +1,18 @@
 package com.company.project.web;
 
+import com.company.project.core.web.CrudController;
 import com.company.project.domain.Student;
+import com.company.project.domain.Teacher;
+import com.company.project.dto.StudentCreateDTO;
+import com.company.project.dto.StudentUpdateDTO;
+import com.company.project.dto.TeacherCreateDTO;
+import com.company.project.dto.TeacherUpdateDTO;
+import com.company.project.service.SchoolService;
 import com.company.project.service.StudentService;
 
+import com.company.project.service.TeacherService;
+import com.company.project.vo.StudentVO;
+import com.company.project.vo.TeacherVO;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -16,19 +26,18 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping(StudentController.BASE_PATH)
-@RequiredArgsConstructor
-public class StudentController {
+public class StudentController extends CrudController<Student, StudentVO, StudentCreateDTO, StudentUpdateDTO, Long> {
     static final String BASE_PATH = "/ui/students";
-
-    public static String getRedirectPath() {
-        return "redirect:" + BASE_PATH;
-    }
-
-    public static String getRedirectPathWithSlash() {
-        return "redirect:" + BASE_PATH + "/";
-    }
+    static final String LIST_VIEW = "students/list";
+    static final String INPUT_VIEW = "students/input";
+    static final String EDIT_VIEW = "students/edit";
 
     private final StudentService service;
+
+    public StudentController(StudentService service) {
+        super(service, BASE_PATH, LIST_VIEW, INPUT_VIEW, EDIT_VIEW);
+        this.service = service;
+    }
 
     @ModelAttribute("basePath")
     public String getBasePath() {
@@ -39,35 +48,9 @@ public class StudentController {
         return "students";
     }
 
-
-    @GetMapping
-    public String listStudents(Model model) {
-        model.addAttribute("students", service.findAll());
-        return "students/list";
-    }
-
-    @GetMapping("/new")
-    public String showCreateForm(Model model) {
-        model.addAttribute("student", new Student());
-        return "students/form";
-    }
-
-    @PostMapping
-    public String createStudent(@ModelAttribute Student student) {
-        service.save(student);
-        return getRedirectPath();
-    }
-
-    @GetMapping("/{id}/edit")
-    public String showEditForm(@PathVariable Long id, Model model) {
-        model.addAttribute("student", service.findById(id).orElseThrow());
-        return "students/form";
-    }
-
-    @GetMapping("/{id}/delete")
-    public String deleteStudent(@PathVariable Long id) {
-        service.deleteById(id);
-        return getRedirectPath();
+    @Override
+    protected StudentCreateDTO createNewDto() {
+        return new StudentCreateDTO();
     }
 
 }

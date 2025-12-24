@@ -1,53 +1,57 @@
 package com.company.project.web;
 
-import java.util.List;
-
 import com.company.project.core.exception.ResourceNotFoundException;
+import com.company.project.core.web.CrudController;
 import com.company.project.domain.Grade;
 import com.company.project.domain.School;
-import com.company.project.domain.Teacher;
+import com.company.project.dto.GradeCreateDTO;
+import com.company.project.dto.GradeUpdateDTO;
 import com.company.project.service.GradeService;
 import com.company.project.service.SchoolService;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.company.project.vo.GradeVO;
+import com.company.project.vo.SchoolSimpleVO;
+import com.company.project.vo.SchoolVO;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequestMapping(GradeController.BASE_PATH)
-@RequiredArgsConstructor
-public class GradeController {
+public class GradeController extends CrudController<Grade, GradeVO, GradeCreateDTO, GradeUpdateDTO, Long> {
     static final String BASE_PATH = "/ui/grades";
+    static final String LIST_VIEW = "grades/list";
+    static final String INPUT_VIEW = "grades/input";
+    static final String EDIT_VIEW = "grades/edit";
 
-    public static String getRedirectPath() {
-        return "redirect:" + BASE_PATH;
-    }
-
-    public static String getRedirectPathWithSlash() {
-        return "redirect:" + BASE_PATH + "/";
-    }
     private final GradeService service;
     private final SchoolService schoolService;
 
+    public GradeController(GradeService service, SchoolService schoolService) {
+        super(service, BASE_PATH, LIST_VIEW, INPUT_VIEW, EDIT_VIEW);
+        this.service = service;
+        this.schoolService = schoolService;
+    }
+
     @ModelAttribute("schools")
-    public Iterable<School> schools() {
-        return schoolService.findAll();
+    public Iterable<SchoolSimpleVO> schools() {
+        return schoolService.findAllSimple();
     }
-    @ModelAttribute("basePath")
-    public String getBasePath() {
-        return BASE_PATH;
-    }
+
     @ModelAttribute("activePage")
     public String getActivePage() {
         return "grades";
     }
 
+    @Override
+    protected GradeCreateDTO createNewDto() {
+        return new GradeCreateDTO();
+    }
+
     @GetMapping
-    public String listGrades(@RequestParam(value = "schoolId", required = false) Long schoolId, Model model) {
+    public String list(@RequestParam(value = "schoolId", required = false) Long schoolId, Model model) {
         if (schoolId != null) {
             model.addAttribute("grades", service.findBySchoolIdWithSchool(schoolId));
         } else {
@@ -55,30 +59,6 @@ public class GradeController {
         }
         model.addAttribute("selectedSchoolId", schoolId);
 
-        return "grades/list";
-    }
-
-    @GetMapping("/new")
-    public String showCreateForm(Model model) {
-        model.addAttribute("grade", new Grade());
-        return "grades/form";
-    }
-
-    @PostMapping
-    public String createGrade(@Valid @ModelAttribute Grade grade) {
-        service.save(grade);
-        return getRedirectPath();
-    }
-
-    @GetMapping("/{id}/edit")
-    public String showEditForm(@PathVariable Long id, Model model) {
-        model.addAttribute("grade", service.findById(id).orElseThrow(() -> new ResourceNotFoundException("Grade not found", "Grade Id:" + id)));
-        return "grades/form";
-    }
-
-    @GetMapping("/{id}/delete")
-    public String deleteGrade(@PathVariable Long id) {
-        service.deleteById(id);
-        return getRedirectPath();
+        return LIST_VIEW;
     }
 }

@@ -1,7 +1,10 @@
 package com.company.project.core.exception;
 
+import lombok.Getter;
+
+@Getter
 public class BusinessException extends RuntimeException {
-    private int errorCode;
+    private final int errorCode;
 
     public BusinessException(String message) {
         super(message);
@@ -23,7 +26,4 @@ public class BusinessException extends RuntimeException {
         this.errorCode = errorCode;
     }
 
-    public int getErrorCode() {
-        return errorCode;
-    }
 }

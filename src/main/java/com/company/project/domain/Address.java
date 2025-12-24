@@ -13,13 +13,13 @@ import lombok.Setter;
 public class Address {
     @Schema(description = "国家", example = "中国")
     private String country;
-
+    @Schema(description = "省", example = "湖南省")
     private String province;
-    @Schema(description = "市", example = "北京市")
+    @Schema(description = "市", example = "湘潭韶山市")
     private String city;
-    @Schema(description = "区/县", example = "朝阳区")
+    @Schema(description = "区/县", example = "韶山乡")
     private String district;
-
+    @Schema(description = "街道", example = "故园路")
     private String street;
     @Schema(description = "详细地址", example = "88号大厦")
     private String detailAddress;

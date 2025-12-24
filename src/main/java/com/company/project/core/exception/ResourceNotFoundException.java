@@ -1,7 +1,10 @@
 package com.company.project.core.exception;
 
+import lombok.Getter;
+
+@Getter
 public class ResourceNotFoundException extends BusinessException {
-    private String resource;
+    private final String resource;
 
     public ResourceNotFoundException(String message, String resource) {
         super(message, 404);
@@ -13,7 +16,4 @@ public class ResourceNotFoundException extends BusinessException {
         this.resource = resource;
     }
 
-    public String getResource() {
-        return resource;
-    }
 }

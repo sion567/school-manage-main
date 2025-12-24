@@ -2,15 +2,15 @@ package com.company.project.web;
 
 import java.util.List;
 
-import com.company.project.domain.Classroom;
-import com.company.project.domain.Grade;
-import com.company.project.domain.School;
-import com.company.project.domain.Teacher;
-import com.company.project.service.ClassroomService;
-import com.company.project.service.GradeService;
-import com.company.project.service.SchoolService;
-import com.company.project.service.TeacherService;
+import com.company.project.core.web.CrudController;
+import com.company.project.domain.*;
+import com.company.project.dto.ClassroomCreateDTO;
+import com.company.project.dto.ClassroomUpdateDTO;
+import com.company.project.dto.CourseCreateDTO;
+import com.company.project.dto.CourseUpdateDTO;
+import com.company.project.service.*;
 
+import com.company.project.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,42 +21,42 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequestMapping(ClassroomController.BASE_PATH)
-@RequiredArgsConstructor
-public class ClassroomController {
+public class ClassroomController extends CrudController<Classroom, ClassroomVO, ClassroomCreateDTO, ClassroomUpdateDTO, Long> {
     public static final String BASE_PATH = "/ui/classrooms";
+    static final String LIST_VIEW = "classrooms/list";
+    static final String INPUT_VIEW = "classrooms/input";
+    static final String EDIT_VIEW = "classrooms/edit";
 
-    public static String getRedirectPath() {
-        return "redirect:" + BASE_PATH;
-    }
-
-    public static String getRedirectPathWithSlash() {
-        return "redirect:" + BASE_PATH + "/";
-    }
 
     private final ClassroomService service;
     private final GradeService gradeService;
     private final TeacherService teacherService;
     private final SchoolService schoolService;
 
+    public ClassroomController(ClassroomService service, GradeService gradeService, TeacherService teacherService, SchoolService schoolService) {
+        super(service, BASE_PATH, LIST_VIEW, INPUT_VIEW, EDIT_VIEW);
+        this.service = service;
+        this.teacherService = teacherService;
+        this.gradeService = gradeService;
+        this.schoolService = schoolService;
+    }
+
     @ModelAttribute("grades")
-    public Iterable<Grade> grades() {
-        return gradeService.findAll();
+    public Iterable<GradeSimpleVO> grades() {
+        return gradeService.findAllSimple();
     }
     @ModelAttribute("teachers")
-    public Iterable<Teacher> teachers() {
-        return teacherService.findAll();
+    public Iterable<TeacherSimpleVO> teachers() {
+        return teacherService.findAllSimple();
     }
-    @ModelAttribute("basePath")
-    public String getBasePath() {
-        return BASE_PATH;
-    }
+
     @ModelAttribute("activePage")
     public String getActivePage() {
         return "classrooms";
     }
 
     @GetMapping
-    public String listClassrooms(
+    public String list(
             @RequestParam(value = "gradeId", required = false) Long gradeId,
             Model model) {
         if (gradeId != null) {
@@ -74,12 +74,17 @@ public class ClassroomController {
         return "classrooms/form";
     }
 
+    @Override
+    protected ClassroomCreateDTO createNewDto() {
+        return null;
+    }
+
     @GetMapping("/school-select")
     public String schoolSelectWithParams(
             @RequestParam(value = "schoolId", required = false) Long schoolId,
             Model model) {
         model.addAttribute("classroom", new Classroom());
-        List<School> schools = schoolService.findAll();
+        List<SchoolVO> schools = schoolService.findAll();
         model.addAttribute("schools", schools);
 
         if (schoolId != null) {
@@ -100,31 +105,5 @@ public class ClassroomController {
             return teacherService.findAll();
         }
         return teacherService.searchTeachers(keyword.trim());
-    }
-
-    @PostMapping
-    public String createClassroom(@Valid @ModelAttribute Classroom classroom) {
-        service.save(classroom);
-        return getRedirectPath();
-    }
-
-    @GetMapping("/{id}/edit")
-    public String showEditForm(@PathVariable Long id, Model model) {
-        model.addAttribute("classroom", service.findById(id).orElseThrow());
-        return "classrooms/form";
-    }
-
-    @GetMapping("/{id}/delete")
-    public String deleteClassroom(@PathVariable Long id) {
-        service.deleteById(id);
-        return getRedirectPath();
-    }
-
-    private String redirectToCurrent() {
-        return getRedirectPath(); // 最简洁的重定向
-    }
-
-    private String redirectToParent() {
-        return "redirect:../";
     }
 }

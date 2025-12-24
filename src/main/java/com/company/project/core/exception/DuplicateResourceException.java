@@ -1,7 +1,10 @@
 package com.company.project.core.exception;
 
+import lombok.Getter;
+
+@Getter
 public class DuplicateResourceException extends BusinessException {
-    private String resource;
+    private final String resource;
 
     public DuplicateResourceException(String message, String resource) {
         super(message, 409);
@@ -13,7 +16,4 @@ public class DuplicateResourceException extends BusinessException {
         this.resource = resource;
     }
 
-    public String getResource() {
-        return resource;
-    }
 }

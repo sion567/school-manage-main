@@ -1,59 +1,53 @@
 package com.company.project.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.company.project.core.service.BaseService;
 import com.company.project.dao.SchoolRepository;
 import com.company.project.dao.StudentRepository;
 import com.company.project.dao.TeacherRepository;
-import com.company.project.domain.Role;
 import com.company.project.domain.School;
 import com.company.project.dto.SchoolCreateDTO;
 import com.company.project.dto.SchoolUpdateDTO;
+import com.company.project.mapper.SchoolMapper;
+import com.company.project.vo.SchoolSimpleVO;
 import com.company.project.vo.SchoolStatistics;
 
-import org.modelmapper.ModelMapper;
+import com.company.project.vo.SchoolVO;
+import lombok.Getter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class SchoolService extends BaseService<School, Long> {
+public class SchoolService extends BaseService<School, SchoolVO, SchoolCreateDTO, SchoolUpdateDTO, Long> {
     private final SchoolRepository schoolRepository;
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
+    @Getter
+    private final SchoolMapper mapper;
 
     public SchoolService(SchoolRepository schoolRepository,
                          TeacherRepository teacherRepository,
-                         StudentRepository studentRepository, ModelMapper modelMapper) {
-        super(schoolRepository, School.class, modelMapper);
+                         StudentRepository studentRepository, SchoolMapper mapper) {
+        super(schoolRepository, School.class, mapper);
         this.schoolRepository = schoolRepository;
         this.teacherRepository = teacherRepository;
         this.studentRepository = studentRepository;
+        this.mapper = mapper;
+    }
+
+    @Override
+    protected Long getIdFromUpdateDto(SchoolUpdateDTO dto) {
+        return dto.getId();
     }
 
 
-    public void createSchool(SchoolCreateDTO dto) {
-        School school = map(dto, School.class);
-        create(school);
+    public List<SchoolSimpleVO> findAllSimple() {
+        List<School> schools = schoolRepository.findAll();
+        return mapper.toSimpleVoList(schools);
     }
-    public void updateSchool(SchoolUpdateDTO dto){
-        School school = map(dto, School.class);
-        update(school);
-    }
-
-//
-//    public UserDTO getUserDTO(Long id) {
-//        User user = userRepository.findById(id).orElseThrow();
-//        return genericMapper.map(user, UserDTO.class);
-//    }
-//
-//    public void updateUser(Long id, UserUpdateDTO updateDTO) {
-//        User existingUser = userRepository.findById(id).orElseThrow();
-//        genericMapper.update(updateDTO, existingUser);
-//        userRepository.save(existingUser);
-//    }
-
 
     // 确保在事务中加载懒加载集合
 //    public UserDTO getUserWithOrdersEagerly(Long userId) {
@@ -128,7 +122,6 @@ public class SchoolService extends BaseService<School, Long> {
 
         return new SchoolStatistics(school, 0, 0, 0);
     }
-
 
 
 }
