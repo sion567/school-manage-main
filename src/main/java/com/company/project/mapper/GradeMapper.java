@@ -1,11 +1,9 @@
 package com.company.project.mapper;
 
-import com.company.project.core.mapper.BaseMapper;
-import com.company.project.domain.Classroom;
+import com.company.project.core.mapper.GenericMapper;
 import com.company.project.domain.Grade;
 import com.company.project.dto.GradeCreateDTO;
 import com.company.project.dto.GradeUpdateDTO;
-import com.company.project.vo.ClassroomSimpleVO;
 import com.company.project.vo.GradeSimpleVO;
 import com.company.project.vo.GradeVO;
 import org.mapstruct.*;
@@ -16,11 +14,11 @@ import java.util.List;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface GradeMapper extends BaseMapper<Grade, GradeVO, GradeCreateDTO, GradeUpdateDTO> {
+public interface GradeMapper extends GenericMapper<Grade, GradeVO, GradeCreateDTO, GradeUpdateDTO, Long> {
 
     GradeMapper INSTANCE = Mappers.getMapper(GradeMapper.class);
 
     @Mapping(target = "id", source = "id")
     @Mapping(target = "name", source = "name")
-    List<GradeSimpleVO> toSimpleVoList(List<Grade> entityList);
+    List<GradeSimpleVO> toSimpleVOList(List<Grade> entityList);
 }

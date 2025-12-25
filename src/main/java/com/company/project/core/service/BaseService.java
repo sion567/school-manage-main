@@ -3,12 +3,15 @@ package com.company.project.core.service;
 import java.io.Serializable;
 import java.util.*;
 
+import com.company.project.core.dto.BaseDTO;
+import com.company.project.core.dto.BaseUpdateDTO;
 import com.company.project.core.exception.ResourceNotFoundException;
-import com.company.project.core.mapper.BaseMapper;
+import com.company.project.core.mapper.GenericMapper;
 import com.company.project.core.persistence.DynamicSpecifications;
 import com.company.project.core.persistence.SearchFilter;
 import com.company.project.core.model.BaseEntity;
 
+import com.company.project.core.vo.BaseVO;
 import jakarta.persistence.*;
 
 import lombok.RequiredArgsConstructor;
@@ -22,7 +25,7 @@ import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
 
 @RequiredArgsConstructor
-public abstract class BaseService<ENTITY extends BaseEntity<ID>, VO, CREATE_DTO, UPDATE_DTO, ID extends Serializable> {
+public abstract class BaseService<ENTITY extends BaseEntity<ID>, VO extends BaseVO<ID>, CREATE_DTO extends BaseDTO, UPDATE_DTO extends BaseUpdateDTO<ID>, ID extends Serializable> {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -31,7 +34,7 @@ public abstract class BaseService<ENTITY extends BaseEntity<ID>, VO, CREATE_DTO,
 
     private final Class<ENTITY> modelClass;
 
-    protected final BaseMapper<ENTITY, VO, CREATE_DTO, UPDATE_DTO> mapper;
+    protected final GenericMapper<ENTITY, VO, CREATE_DTO, UPDATE_DTO, ID> mapper;
 
     /**
      * 使用原生SQL的部分更新（性能更好）
@@ -99,8 +102,8 @@ public abstract class BaseService<ENTITY extends BaseEntity<ID>, VO, CREATE_DTO,
 
     @Timed(value = "service.find.page", description = "Find entities with pagination")
     @Counted(value = "service.find.page.calls", description = "Page find calls")
-    public Page<ENTITY> findAll(Pageable pageable) {
-        return repository.findAll(pageable);
+    public Page<VO> findAll(Pageable pageable) {
+        return repository.findAll(pageable).map(mapper::toVO);
     }
 
     @Timed(value = "service.create.all", description = "Create multiple entities")

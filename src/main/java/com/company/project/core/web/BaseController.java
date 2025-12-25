@@ -37,15 +37,6 @@ public abstract class BaseController {
         return getRedirectPath(basePath);
     }
 
-    // 通用的删除失败处理
-    protected void handleDeleteError(Exception e) {
-        if (e instanceof ResourceNotFoundException) {
-            throw e;
-        } else {
-            throw new BusinessException("删除数据失败", e);
-        }
-    }
-
     public abstract String getBasePath();
     public abstract String getActivePage();
 }

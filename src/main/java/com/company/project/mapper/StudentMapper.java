@@ -1,6 +1,6 @@
 package com.company.project.mapper;
 
-import com.company.project.core.mapper.BaseMapper;
+import com.company.project.core.mapper.GenericMapper;
 import com.company.project.domain.Student;
 import com.company.project.dto.StudentCreateDTO;
 import com.company.project.dto.StudentUpdateDTO;
@@ -14,7 +14,7 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface StudentMapper extends BaseMapper<Student, StudentVO, StudentCreateDTO, StudentUpdateDTO> {
+public interface StudentMapper extends GenericMapper<Student, StudentVO, StudentCreateDTO, StudentUpdateDTO, Long> {
 
     StudentMapper INSTANCE = Mappers.getMapper(StudentMapper.class);
 }

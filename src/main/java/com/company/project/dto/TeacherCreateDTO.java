@@ -1,4 +1,6 @@
 package com.company.project.dto;
 
-public record TeacherCreateDTO() {
+import com.company.project.core.dto.BaseDTO;
+
+public record TeacherCreateDTO() implements BaseDTO {
 }

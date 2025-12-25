@@ -1,4 +1,6 @@
 package com.company.project.dto;
 
-public record CourseScheduleCreateDTO() {
+import com.company.project.core.dto.BaseDTO;
+
+public record CourseScheduleCreateDTO() implements BaseDTO {
 }

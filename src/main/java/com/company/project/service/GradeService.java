@@ -53,7 +53,7 @@ public class GradeService extends BaseService<Grade, GradeVO, GradeCreateDTO, Gr
 
     public List<GradeSimpleVO> findAllSimple() {
         List<Grade> grades = repository.findAll();
-        return mapper.toSimpleVoList(grades);
+        return mapper.toSimpleVOList(grades);
     }
 }
 

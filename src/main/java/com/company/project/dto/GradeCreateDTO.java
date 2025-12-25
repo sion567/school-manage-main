@@ -1,4 +1,6 @@
 package com.company.project.dto;
 
-public record GradeCreateDTO() {
+import com.company.project.core.dto.BaseDTO;
+
+public record GradeCreateDTO() implements BaseDTO {
 }

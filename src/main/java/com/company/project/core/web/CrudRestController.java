@@ -34,7 +34,7 @@ import jakarta.validation.Valid;
 
 @Tag(name = "通用 CRUD 操作", description = "通用的增删改查操作接口")
 @RequiredArgsConstructor
-public abstract class CrudRestController<T extends BaseEntity<ID>, VO extends BaseVO, CREATE_DTO extends BaseDTO, UPDATE_DTO extends BaseUpdateDTO, ID extends Serializable> extends BaseRestController {
+public abstract class CrudRestController<T extends BaseEntity<ID>, VO extends BaseVO<ID>, CREATE_DTO extends BaseDTO, UPDATE_DTO extends BaseUpdateDTO<ID>, ID extends Serializable> extends BaseRestController {
 
     protected final BaseService<T, VO, CREATE_DTO, UPDATE_DTO, ID> crudService;
 

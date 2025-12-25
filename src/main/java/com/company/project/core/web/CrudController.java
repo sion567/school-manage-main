@@ -1,9 +1,13 @@
 package com.company.project.core.web;
 
+import com.company.project.core.dto.BaseDTO;
+import com.company.project.core.dto.BaseUpdateDTO;
+import com.company.project.core.exception.BusinessException;
 import com.company.project.core.exception.ResourceNotFoundException;
 import com.company.project.core.model.BaseEntity;
 import com.company.project.core.service.BaseService;
 import com.company.project.core.vo.BaseVO;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -15,10 +19,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.io.Serializable;
+import java.net.http.HttpRequest;
 
 @Controller
 @RequiredArgsConstructor
-public abstract class CrudController<T extends BaseEntity<ID>, VO extends BaseVO<ID>, CREATE_DTO, UPDATE_DTO, ID extends Serializable> extends BaseController {
+public abstract class CrudController<T extends BaseEntity<ID>, VO extends BaseVO<ID>, CREATE_DTO extends BaseDTO, UPDATE_DTO extends BaseUpdateDTO<ID>, ID extends Serializable> extends BaseController {
 
     protected final BaseService<T, VO, CREATE_DTO, UPDATE_DTO, ID> crudService;
     protected final String basePath;
@@ -32,7 +37,12 @@ public abstract class CrudController<T extends BaseEntity<ID>, VO extends BaseVO
     }
 
     @GetMapping
-    public String list(Model model) {
+    public String list(HttpServletRequest req, Model model) {
+        return listWithSpecialLogic(req, model);
+    }
+
+    protected String listWithSpecialLogic(HttpServletRequest request,
+                                          Model model) {
         model.addAttribute("entities", crudService.findAll());
         return listView;
     }
@@ -78,9 +88,10 @@ public abstract class CrudController<T extends BaseEntity<ID>, VO extends BaseVO
         try {
             crudService.deleteById(id);
             return handleDeleteSuccess(basePath);
+        } catch (ResourceNotFoundException e) {
+            throw new ResourceNotFoundException("资源不存在", "resource id:" + id);
         } catch (Exception e) {
-            handleDeleteError(e);
-            return null; // 不会到达这里，因为抛出了异常
+            throw new BusinessException("删除数据失败", e);
         }
     }
 

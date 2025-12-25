@@ -1,6 +1,6 @@
 package com.company.project.mapper;
 
-import com.company.project.core.mapper.BaseMapper;
+import com.company.project.core.mapper.GenericMapper;
 import com.company.project.domain.Course;
 import com.company.project.dto.CourseCreateDTO;
 import com.company.project.dto.CourseUpdateDTO;
@@ -14,7 +14,7 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface CourseMapper extends BaseMapper<Course, CourseVO, CourseCreateDTO, CourseUpdateDTO> {
+public interface CourseMapper extends GenericMapper<Course, CourseVO, CourseCreateDTO, CourseUpdateDTO, Long> {
 
     CourseMapper INSTANCE = Mappers.getMapper(CourseMapper.class);
 }

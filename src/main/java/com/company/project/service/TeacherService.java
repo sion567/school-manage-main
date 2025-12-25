@@ -62,13 +62,14 @@ public class TeacherService extends BaseService<Teacher, TeacherVO, TeacherCreat
         return repository.findBySchoolId(schoolId);
     }
 
-    public List<Teacher> searchTeachers(String keyword) {
-        return repository.findByFirstNameContainingOrLastNameContaining(keyword, keyword);
+    public List<TeacherVO> searchTeachers(String keyword) {
+        List<Teacher> teachers = repository.findByFirstNameContainingOrLastNameContaining(keyword, keyword);
+        return mapper.toVOList(teachers);
     }
 
     public List<TeacherSimpleVO> findAllSimple() {
         List<Teacher> teachers = repository.findAll();
-        return mapper.toSimpleVoList(teachers);
+        return mapper.toSimpleVOList(teachers);
     }
 
 //    public void assignStudentToTeacher(Long teacherId, Long studentId) {

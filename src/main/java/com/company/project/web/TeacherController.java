@@ -1,6 +1,7 @@
 package com.company.project.web;
 
 
+import com.company.project.core.util.RequestUtils;
 import com.company.project.core.web.CrudController;
 import com.company.project.domain.School;
 import com.company.project.domain.Teacher;
@@ -13,6 +14,7 @@ import com.company.project.service.TeacherService;
 
 import com.company.project.vo.SchoolVO;
 import com.company.project.vo.TeacherVO;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,18 +49,16 @@ public class TeacherController extends CrudController<Teacher, TeacherVO, Teache
         return schoolService.findAll();
     }
 
-    @GetMapping
-    public String list(@RequestParam(value = "schoolId", required = false) Long schoolId, Model model) {
+    public String listWithSpecialLogic(HttpServletRequest req, Model model) {
+        Long schoolId = RequestUtils.getParameterAsLong(req, "schoolId");
         if (schoolId != null) {
             model.addAttribute("teachers", service.findBySchoolIdWithSchool(schoolId));
         } else {
             model.addAttribute("teachers", service.findAllWithSchool());
         }
         model.addAttribute("selectedSchoolId", schoolId);
-
-        return LIST_VIEW;
+        return "classrooms/list";
     }
-
 
     @Override
     protected TeacherCreateDTO createNewDto() {

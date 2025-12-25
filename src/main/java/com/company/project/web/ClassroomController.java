@@ -2,6 +2,7 @@ package com.company.project.web;
 
 import java.util.List;
 
+import com.company.project.core.util.RequestUtils;
 import com.company.project.core.web.CrudController;
 import com.company.project.domain.*;
 import com.company.project.dto.ClassroomCreateDTO;
@@ -11,6 +12,7 @@ import com.company.project.dto.CourseUpdateDTO;
 import com.company.project.service.*;
 
 import com.company.project.vo.*;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -55,10 +57,8 @@ public class ClassroomController extends CrudController<Classroom, ClassroomVO, 
         return "classrooms";
     }
 
-    @GetMapping
-    public String list(
-            @RequestParam(value = "gradeId", required = false) Long gradeId,
-            Model model) {
+    public String listWithSpecialLogic(HttpServletRequest req, Model model) {
+        Long gradeId = RequestUtils.getParameterAsLong(req, "gradeId");
         if (gradeId != null) {
             model.addAttribute("classrooms", service.findByGradeIdWithNames(gradeId));
         } else {
@@ -66,12 +66,6 @@ public class ClassroomController extends CrudController<Classroom, ClassroomVO, 
         }
         model.addAttribute("selectedGradeId", gradeId);
         return "classrooms/list";
-    }
-
-    @GetMapping("/new")
-    public String showCreateForm(Model model) {
-        model.addAttribute("classroom", new Classroom());
-        return "classrooms/form";
     }
 
     @Override
@@ -100,7 +94,7 @@ public class ClassroomController extends CrudController<Classroom, ClassroomVO, 
 
     @GetMapping("/teacher-select")
     @ResponseBody
-    public List<Teacher> searchTeachers(@RequestParam(required = false) String keyword) {
+    public List<TeacherVO> searchTeachers(@RequestParam(required = false) String keyword) {
         if (keyword == null || keyword.trim().isEmpty()) {
             return teacherService.findAll();
         }

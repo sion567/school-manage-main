@@ -1,6 +1,7 @@
 package com.company.project.web;
 
 import com.company.project.core.exception.ResourceNotFoundException;
+import com.company.project.core.util.RequestUtils;
 import com.company.project.core.web.CrudController;
 import com.company.project.domain.Grade;
 import com.company.project.domain.School;
@@ -12,6 +13,7 @@ import com.company.project.service.SchoolService;
 import com.company.project.vo.GradeVO;
 import com.company.project.vo.SchoolSimpleVO;
 import com.company.project.vo.SchoolVO;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -50,15 +52,14 @@ public class GradeController extends CrudController<Grade, GradeVO, GradeCreateD
         return new GradeCreateDTO();
     }
 
-    @GetMapping
-    public String list(@RequestParam(value = "schoolId", required = false) Long schoolId, Model model) {
+    public String listWithSpecialLogic(HttpServletRequest req, Model model) {
+        Long schoolId = RequestUtils.getParameterAsLong(req, "schoolId");
         if (schoolId != null) {
             model.addAttribute("grades", service.findBySchoolIdWithSchool(schoolId));
         } else {
             model.addAttribute("grades", service.findAllWithSchool());
         }
         model.addAttribute("selectedSchoolId", schoolId);
-
-        return LIST_VIEW;
+        return "classrooms/list";
     }
 }

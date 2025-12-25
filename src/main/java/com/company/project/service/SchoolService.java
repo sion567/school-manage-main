@@ -46,7 +46,7 @@ public class SchoolService extends BaseService<School, SchoolVO, SchoolCreateDTO
 
     public List<SchoolSimpleVO> findAllSimple() {
         List<School> schools = schoolRepository.findAll();
-        return mapper.toSimpleVoList(schools);
+        return mapper.toSimpleVOList(schools);
     }
 
     // 确保在事务中加载懒加载集合

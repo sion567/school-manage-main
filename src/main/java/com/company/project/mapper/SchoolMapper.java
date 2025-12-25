@@ -1,6 +1,6 @@
 package com.company.project.mapper;
 
-import com.company.project.core.mapper.BaseMapper;
+import com.company.project.core.mapper.GenericMapper;
 import com.company.project.domain.Address;
 import com.company.project.domain.ContactInfo;
 import com.company.project.domain.School;
@@ -16,7 +16,7 @@ import java.util.List;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface SchoolMapper extends BaseMapper<School, SchoolVO, SchoolCreateDTO, SchoolUpdateDTO> {
+public interface SchoolMapper extends GenericMapper<School, SchoolVO, SchoolCreateDTO, SchoolUpdateDTO, Long> {
 
     SchoolMapper INSTANCE = Mappers.getMapper(SchoolMapper.class);
 
@@ -48,7 +48,7 @@ public interface SchoolMapper extends BaseMapper<School, SchoolVO, SchoolCreateD
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "name", source = "name")
-    List<SchoolSimpleVO> toSimpleVoList(List<School> entityList);
+    List<SchoolSimpleVO> toSimpleVOList(List<School> entityList);
 
     default ContactInfo createContactInfo(SchoolCreateDTO dto) {
         if (dto.email() != null || dto.phone() != null ||
