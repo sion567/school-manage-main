@@ -28,7 +28,7 @@ public class SchoolController extends CrudController<School, SchoolVO, SchoolCre
 
     @Override
     protected SchoolCreateDTO createNewDto() {
-        return new SchoolCreateDTO();
+        return SchoolCreateDTO.empty();
     }
 
     @ModelAttribute("activePage")

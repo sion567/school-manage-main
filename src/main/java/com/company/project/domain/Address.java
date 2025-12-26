@@ -11,8 +11,8 @@ import lombok.Setter;
 @Setter
 @Schema(description = "详细地址对象")
 public class Address {
-    @Schema(description = "国家", example = "中国")
-    private String country;
+//    @Schema(description = "国家", example = "中国")
+//    private String country;
     @Schema(description = "省", example = "湖南省")
     private String province;
     @Schema(description = "市", example = "湘潭韶山市")
@@ -24,7 +24,7 @@ public class Address {
     @Schema(description = "详细地址", example = "88号大厦")
     private String detailAddress;
     @Schema(description = "邮政编码", example = "100000")
-    private String postalCode;
+    private Integer postalCode;
 
 //    latitude DECIMAL(10, 6) COMMENT '纬度',
 //    longitude DECIMAL(10, 6) COMMENT '经度',

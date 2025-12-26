@@ -66,8 +66,9 @@ public abstract class CrudController<T extends BaseEntity<ID>, VO extends BaseVO
 
     @GetMapping("/{id}/edit")
     public String showEditForm(@PathVariable ID id, Model model) {
-        model.addAttribute("dto", crudService.findById(id).orElseThrow(() ->
+        model.addAttribute("dto", crudService.findByIdForEdit(id).orElseThrow(() ->
                 new ResourceNotFoundException("Entity not found with id: " + id, null)));
+        model.addAttribute("updatePath", basePath + "/" + id); // @{/ui/school/{id}(id=${dto.id})}
         return editView;
     }
 

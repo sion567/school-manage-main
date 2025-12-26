@@ -30,7 +30,6 @@ public class Teacher extends User {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "address.country", column = @Column(name = "work_country")),
             @AttributeOverride(name = "address.province", column = @Column(name = "work_province")),
             @AttributeOverride(name = "address.city", column = @Column(name = "work_city")),
             @AttributeOverride(name = "address.district", column = @Column(name = "work_district")),

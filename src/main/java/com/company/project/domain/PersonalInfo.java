@@ -28,7 +28,6 @@ public class PersonalInfo {
     private LocalDate dateOfBirth;
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "address.country", column = @Column(name = "home_country")),
             @AttributeOverride(name = "address.province", column = @Column(name = "home_province")),
             @AttributeOverride(name = "address.city", column = @Column(name = "home_city")),
             @AttributeOverride(name = "address.district", column = @Column(name = "home_district")),

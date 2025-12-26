@@ -94,6 +94,12 @@ public abstract class BaseService<ENTITY extends BaseEntity<ID>, VO extends Base
         return repository.findById(id).map(mapper::toVO);
     }
 
+    @Timed(value = "service.find.byId", description = "Find entity by ID")
+    @Counted(value = "service.find.byId.calls", description = "Find by ID calls")
+    public Optional<UPDATE_DTO> findByIdForEdit(ID id) {
+        return repository.findById(id).map(mapper::toDTO);
+    }
+
     @Timed(value = "service.find.all", description = "Find all entities")
     @Counted(value = "service.find.all.calls", description = "Find all calls")
     public List<VO> findAll() {

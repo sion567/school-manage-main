@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Fragment Definitions</title>
+</head>
+<body>
+
+<!-- 修正的文本输入片段 -->
+<div th:fragment="textInput(fieldName, label, id, required)" class="mb-3">
+    <label th:for="${id}" class="form-label" th:text="${label}"></label>
+    <input type="text"
+           class="form-control"
+           th:id="${id}"
+           th:field="*{__${fieldName}__}"
+    th:required="${required}">
+    <div th:if="${#fields.hasErrors(fieldName)}" class="error text-danger">
+        <span th:errors="*{__${fieldName}__}"></span>
+    </div>
+</div>
+
+<!-- 修正的下拉选择片段 -->
+<div th:fragment="selectField(fieldName, label, id, options, placeholder)" class="mb-3">
+    <label th:for="${id}" class="form-label" th:text="${label}"></label>
+    <select class="form-control" th:id="${id}" th:field="*{__${fieldName}__}">
+        <option th:if="${placeholder}" value="" th:text="${placeholder}"></option>
+        <option th:each="option : ${options}"
+                th:value="${option.value}"
+                th:text="${option.label}"></option>
+    </select>
+    <div th:if="${#fields.hasErrors(fieldName)}" class="error text-danger">
+        <span th:errors="*{__${fieldName}__}"></span>
+    </div>
+</div>
+
+<!-- 通用文本域字段 -->
+<div th:fragment="textareaField(field, label, id, rows)" class="mb-3">
+    <label th:for="${id}" class="form-label" th:text="${label}"></label>
+    <textarea class="form-control"
+              th:id="${id}"
+              th:field="${field}"
+              th:rows="${rows ?: 3}"></textarea>
+    <div th:if="${#fields.hasErrors(field)}" class="error">
+        <span th:errors="${field}"></span>
+    </div>
+</div>
+
+</body>
+</html>

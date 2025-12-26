@@ -21,11 +21,12 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="school : ${schools}">
+            <tr th:each="school : ${entities}">
                 <td th:text="${school.id}"></td>
                 <td th:text="${school.name}"></td>
-                <td th:text="${school.contactInfo.phoneNumber}"></td>
-                <td th:text="${school.contactInfo.email}"></td>
+                <td th:text="${school.phone}"></td>
+                <td th:text="${school.email}"></td>
+                <td th:text="${school.address}"></td>
                 <td>-</td>
                 <td>
                     <a th:href="@{${basePath + '/' + school.id + '/edit'}}" class="btn btn-sm btn-warning">编辑</a>

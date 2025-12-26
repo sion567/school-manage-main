@@ -9,5 +9,5 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
         property = "id"
 )
 public record SchoolVO (
-        Long id, String name, String email, String phone, String province, String street) implements BaseVO<Long> {
+        Long id, String name, String email, String phone, String address, String postcode) implements BaseVO<Long> {
 }
