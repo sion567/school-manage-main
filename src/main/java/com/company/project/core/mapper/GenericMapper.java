@@ -15,7 +15,7 @@ public interface GenericMapper<E extends BaseEntity<ID>, V extends BaseVO<ID>, C
     V toVO(E entity);
     E toEntity(CREATE_DTO createDto);
     UPDATE_DTO toDTO(E entity);
-    void updateEntityFromDto(UPDATE_DTO updateDto, @MappingTarget E entity);
+    void updateEntityFromDTO(UPDATE_DTO updateDto, @MappingTarget E entity);
     default List<V> toVOList(List<E> entities) {
         if (entities == null) {
             return Collections.emptyList();

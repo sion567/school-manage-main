@@ -83,7 +83,7 @@ public abstract class BaseService<ENTITY extends BaseEntity<ID>, VO extends Base
         ENTITY entity = repository.findById(getIdFromUpdateDto(dto))
                 .orElseThrow(() -> new ResourceNotFoundException("Entity not found", modelClass.getSimpleName())); //TODO
 
-        mapper.updateEntityFromDto(dto, entity);
+        mapper.updateEntityFromDTO(dto, entity);
         ENTITY updatedEntity = repository.save(entity);
         return mapper.toVO(updatedEntity);
     }

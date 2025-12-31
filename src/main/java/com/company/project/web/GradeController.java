@@ -1,10 +1,8 @@
 package com.company.project.web;
 
-import com.company.project.core.exception.ResourceNotFoundException;
 import com.company.project.core.util.RequestUtils;
 import com.company.project.core.web.CrudController;
 import com.company.project.domain.Grade;
-import com.company.project.domain.School;
 import com.company.project.dto.GradeCreateDTO;
 import com.company.project.dto.GradeUpdateDTO;
 import com.company.project.service.GradeService;
@@ -12,13 +10,10 @@ import com.company.project.service.SchoolService;
 
 import com.company.project.vo.GradeVO;
 import com.company.project.vo.SchoolSimpleVO;
-import com.company.project.vo.SchoolVO;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping(GradeController.BASE_PATH)
@@ -49,7 +44,7 @@ public class GradeController extends CrudController<Grade, GradeVO, GradeCreateD
 
     @Override
     protected GradeCreateDTO createNewDto() {
-        return new GradeCreateDTO();
+        return GradeCreateDTO.empty() ;
     }
 
     public String listWithSpecialLogic(HttpServletRequest req, Model model) {
@@ -60,6 +55,6 @@ public class GradeController extends CrudController<Grade, GradeVO, GradeCreateD
             model.addAttribute("grades", service.findAllWithSchool());
         }
         model.addAttribute("selectedSchoolId", schoolId);
-        return "classrooms/list";
+        return LIST_VIEW;
     }
 }

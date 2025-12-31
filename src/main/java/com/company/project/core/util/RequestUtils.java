@@ -32,6 +32,8 @@ public class RequestUtils {
                                             String paramName,
                                             Long defaultValue) {
         String value = request.getParameter(paramName);
+        if (value == null && defaultValue == null)
+            return null;
         try {
             return value != null ? Long.parseLong(value) : defaultValue;
         } catch (NumberFormatException e) {

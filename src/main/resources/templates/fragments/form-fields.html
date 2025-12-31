@@ -24,8 +24,8 @@
     <select class="form-control" th:id="${id}" th:field="*{__${fieldName}__}">
         <option th:if="${placeholder}" value="" th:text="${placeholder}"></option>
         <option th:each="option : ${options}"
-                th:value="${option.value}"
-                th:text="${option.label}"></option>
+                th:value="${option.id}"
+                th:text="${option.name}"></option>
     </select>
     <div th:if="${#fields.hasErrors(fieldName)}" class="error text-danger">
         <span th:errors="*{__${fieldName}__}"></span>
